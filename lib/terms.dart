@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'home.dart';
 
 class Terms extends StatefulWidget {
   @override
@@ -8,6 +10,39 @@ class Terms extends StatefulWidget {
 class _TermsState extends State<Terms> {
   bool aceitoTermos = false;
   final TextEditingController _cpfController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  final cpfMaskFormatter = MaskTextInputFormatter(
+    mask: '###.###.###-##',
+    filter: {"#": RegExp(r'[0-9]')},
+    type: MaskAutoCompletionType.lazy,
+  );
+
+  void _submitForm() {
+    if (_cpfController.text.isEmpty || _cpfController.text.length < 14) {
+      _showMessage('Por favor, preencha um CPF válido');
+      return;
+    }
+
+    if (!aceitoTermos) {
+      _showMessage('Você precisa aceitar os Termos e Condições');
+      return;
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +79,17 @@ class _TermsState extends State<Terms> {
               const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFFD1D5DB), // cor secundária do campo
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: Color(0xFFd1d5db)),
                 ),
                 child: TextField(
                   controller: _cpfController,
                   keyboardType: TextInputType.number,
+                  inputFormatters: [cpfMaskFormatter],
                   decoration: const InputDecoration(
                     hintText: 'Digite seu CPF',
-                    hintStyle: TextStyle(color: Color(0xFF6B7280)), // text-gray-500
+                    hintStyle: TextStyle(color: Color(0xFF6B7280)),
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                   ),
@@ -62,7 +99,7 @@ class _TermsState extends State<Terms> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Color(0xFFd1d5db)), // border-gray-300
+                  border: Border.all(color: Color(0xFFd1d5db)),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: const Column(
@@ -104,14 +141,12 @@ class _TermsState extends State<Terms> {
               const Spacer(),
               Center(
                 child: GestureDetector(
-                  onTap: () {
-                    // Ação do botão
-                  },
+                  onTap: _submitForm,
                   child: Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFD1D5DB), // mesma cor do campo
+                      color: const Color(0xFFFACC15),
                       borderRadius: BorderRadius.circular(40),
                     ),
                     alignment: Alignment.center,
