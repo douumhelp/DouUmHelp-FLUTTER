@@ -3,6 +3,8 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'home.dart';
 
 class Terms extends StatefulWidget {
+  const Terms({Key? key}) : super(key: key);
+  
   @override
   State<Terms> createState() => _TermsState();
 }
