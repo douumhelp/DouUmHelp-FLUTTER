@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'register.dart'; // Importa a tela de registro
+import 'home.dart';       // Tela Home
+import 'register.dart';   // Tela de Registro
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -57,7 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      // ação de esqueci a senha
+                    },
                     child: Text(
                       'Esqueceu a sua senha?',
                       style: GoogleFonts.outfit(
@@ -76,7 +79,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    // Redireciona para a Home
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
                   child: Text(
                     'Entrar',
                     style: GoogleFonts.outfit(

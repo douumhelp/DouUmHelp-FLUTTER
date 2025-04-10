@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'terms.dart'; // Importa a tela Terms
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -20,14 +21,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
-      // Processar os dados do formulário
-      Navigator.pushNamed(context, '/sign_2', arguments: {
-        'name': nameController.text,
-        'surname': surnameController.text,
-        'phone': phoneController.text,
-        'email': emailController.text,
-        'password': passwordController.text,
-      });
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => Terms(),
+        ),
+      );
     }
   }
 
@@ -120,22 +119,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildTextField(TextEditingController controller, String hint, IconData icon, bool required, {bool email = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: TextFormField(
-        controller: controller,
-        keyboardType: email ? TextInputType.emailAddress : TextInputType.text,
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon: Icon(icon, color: Colors.grey),
-          filled: true,
-          fillColor: Colors.grey[300],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            hint + (required ? ' *' : ''),
+            style: TextStyle(color: Colors.black),
           ),
-        ),
-        validator: required
-            ? (value) => value!.isEmpty ? 'Campo obrigatório' : null
-            : null,
+          const SizedBox(height: 8),
+          Container(
+            decoration: BoxDecoration(
+              color: Color(0xFFD1D5DB),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            child: TextFormField(
+              controller: controller,
+              keyboardType: email ? TextInputType.emailAddress : TextInputType.text,
+              decoration: InputDecoration(
+                prefixIcon: Icon(icon, color: Colors.grey),
+                hintText: hint,
+                hintStyle: TextStyle(color: Color(0xFF6B7280)),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              ),
+              validator: required
+                  ? (value) => value!.isEmpty ? 'Campo obrigatório' : null
+                  : null,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -143,31 +155,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget _buildPasswordField(TextEditingController controller, String hint, {bool confirm = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: TextFormField(
-        controller: controller,
-        obscureText: !_passwordVisible,
-        decoration: InputDecoration(
-          hintText: hint,
-          prefixIcon: Icon(Icons.lock, color: Colors.grey),
-          suffixIcon: IconButton(
-            icon: Icon(
-              _passwordVisible ? Icons.visibility : Icons.visibility_off,
-              color: Colors.grey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            hint + ' *',
+            style: TextStyle(color: Colors.black),
+          ),
+          const SizedBox(height: 8),
+          Container(
+            decoration: BoxDecoration(
+              color: Color(0xFFD1D5DB),
+              borderRadius: BorderRadius.circular(30),
             ),
-            onPressed: () => setState(() => _passwordVisible = !_passwordVisible),
+            child: TextFormField(
+              controller: controller,
+              obscureText: !_passwordVisible,
+              decoration: InputDecoration(
+                hintText: hint,
+                hintStyle: TextStyle(color: Color(0xFF6B7280)),
+                prefixIcon: Icon(Icons.lock, color: Colors.grey),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () => setState(() => _passwordVisible = !_passwordVisible),
+                ),
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+              ),
+              validator: (value) {
+                if (value!.isEmpty) return 'Campo obrigatório';
+                if (confirm && value != passwordController.text) return 'As senhas não coincidem';
+                return null;
+              },
+            ),
           ),
-          filled: true,
-          fillColor: Colors.grey[300],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
-        ),
-        validator: (value) {
-          if (value!.isEmpty) return 'Campo obrigatório';
-          if (confirm && value != passwordController.text) return 'As senhas não coincidem';
-          return null;
-        },
+        ],
       ),
     );
   }
