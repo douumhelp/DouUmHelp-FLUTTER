@@ -80,7 +80,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
                   ),
                   onPressed: () {
-                    // Redireciona para a Home
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),
