@@ -1,6 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'terms.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future<void> registerUser({
+  required String name,
+  required String lastName,
+  required String email,
+  required String hashpassword,
+}) async {
+  final url = Uri.parse('https://api.douumhelp.com.br/auth/register/pf');
+
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'firstName': String,
+      'lastName': String,
+      'email': String,
+      'hashPassword': String,
+      'telephone': String,
+      'cpf': String,
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    print(' Cadastro realizado com sucesso!');
+    // Aqui você pode navegar para a próxima tela (ex: login ou home)
+  } else {
+    print(' Erro ao cadastrar: ${response.body}');
+    // Mostrar erro na tela, se quiser
+  }
+}
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -15,20 +47,33 @@ class RegisterScreenState extends State<RegisterScreen> {
   bool _buttonPressed = false;
 
   TextEditingController nameController = TextEditingController();
-  TextEditingController surnameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController telephoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController hashPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
+
+    final name = nameController.text;
+    final lastName = lastNameController.text;
+    final email = emailController.text;
+    final phone = telephoneController.text;
+    final hashpassword = hashPasswordController.text;
+
       Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Terms(),
+      context,
+      MaterialPageRoute(
+        builder: (context) => Terms(
+          name: name,
+          lastName: lastName,
+          phone: phone,
+          email: email,
+          hashpassword: hashpassword,
         ),
-      );
+      ),
+    );
     }
   }
 
@@ -66,10 +111,10 @@ class RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     children: [
                       _buildTextField(nameController, 'Nome', Icons.person, true),
-                      _buildTextField(surnameController, 'Sobrenome', Icons.person, true),
-                      _buildTextField(phoneController, 'Digite seu telefone (opcional)', Icons.phone, false),
+                      _buildTextField(lastNameController, 'Sobrenome', Icons.person, true),
+                      _buildTextField(telephoneController, 'Digite seu telefone (opcional)', Icons.phone, false),
                       _buildTextField(emailController, 'Digite seu e-mail', Icons.email, true, email: true),
-                      _buildPasswordField(passwordController, 'Digite sua senha'),
+                      _buildPasswordField(hashPasswordController, 'Digite sua senha'),
                       _buildPasswordField(confirmPasswordController, 'Confirme sua senha', confirm: true),
                     ],
                   ),
@@ -189,7 +234,7 @@ class RegisterScreenState extends State<RegisterScreen> {
               ),
               validator: (value) {
                 if (value!.isEmpty) return 'Campo obrigatório';
-                if (confirm && value != passwordController.text) return 'As senhas não coincidem';
+                if (confirm && value != hashPasswordController.text) return 'As senhas não coincidem';
                 return null;
               },
             ),

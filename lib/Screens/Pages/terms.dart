@@ -1,10 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'home.dart';
+import 'package:http/http.dart' as http;
+
+
+
 
 class Terms extends StatefulWidget {
-  const Terms({Key? key}) : super(key: key);
-  
+  final String name;
+  final String lastName;
+  final String phone;
+  final String email;
+  final String hashpassword;
+
+  const Terms({
+    Key? key,
+    required this.name,
+    required this.lastName,
+    required this.phone,
+    required this.email,
+    required this.hashpassword,
+  }) : super(key: key);
+
   @override
   State<Terms> createState() => _TermsState();
 }
@@ -13,6 +30,8 @@ class _TermsState extends State<Terms> {
   bool aceitoTermos = false;
   final TextEditingController _cpfController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  TextEditingController cpfController = TextEditingController();
+  bool isLoading = false;
 
   final cpfMaskFormatter = MaskTextInputFormatter(
     mask: '###.###.###-##',
@@ -170,3 +189,43 @@ class _TermsState extends State<Terms> {
     );
   }
 }
+
+Future<void> registerUser({
+  required String name,
+  required String lastName,
+  required String phone,
+  required String email,
+  required String hashpassword,
+  required String cpf,
+}) async {
+  final url = Uri.parse('https://api.douumhelp.com.br/auth/register/pf');
+
+  final body = {
+    'name': name,
+    'lastName': lastName,
+    'phone': phone,
+    'email': email,
+    'hashpassword': hashpassword,
+    'cpf': cpf,
+  };
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 201) {
+      // sucesso
+      print('Usuário registrado com sucesso');
+    } else {
+      // erro
+      print('Erro no registro: ${response.statusCode}');
+      print(response.body);
+    }
+  } catch (e) {
+    print('Erro ao registrar usuário: $e');
+  }
+}
+
