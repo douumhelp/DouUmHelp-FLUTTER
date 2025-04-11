@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'home.dart';       // Tela Home
-import 'register.dart';   // Tela de Registro
+import 'home.dart';       
+import 'register.dart';   
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -11,9 +15,71 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _inputController = TextEditingController();
+  final TextEditingController _hashPasswordController = TextEditingController();
   bool _passwordVisible = false;
+
+   Future<void> loginUser(BuildContext context) async {
+  final input = _inputController.text.trim();
+  final hashPassword = _hashPasswordController.text;
+
+  if (input.isEmpty || hashPassword.isEmpty) {
+    _showMessage('Preencha todos os campos');
+    return;
+  }
+
+  final url = Uri.parse('https://api.douumhelp.com.br/auth/login');
+
+  final isCpf = RegExp(r'^\d{11}$').hasMatch(input); // verifica se são 11 dígitos
+  final body = {
+    if (isCpf) 'cpf': input else 'email': input,
+    'hashPassword': hashPassword,
+  };
+
+  debugPrint('Enviando login com corpo: $body');
+
+  try {
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(body),
+    );
+
+    print('Enviando login com corpo: $body');
+    print('Resposta: ${response.statusCode} ${response.body}');
+
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final token = data['access_token'];
+
+      if (token != null) {
+       final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('auth_token', token);
+
+       Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+       );
+      }else {
+        _showMessage('Token não encontrado na resposta.');
+      }
+    } else {
+      _showMessage('Erro ao fazer login: ${response.statusCode}');
+    }
+  } catch (e) {
+    _showMessage('Erro de conexão: $e');
+  }
+}
+
+void _showMessage(String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(message),
+      backgroundColor: Colors.redAccent,
+    ),
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +119,9 @@ class LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                _buildTextField('Email ou CPF', _emailController, Icons.email, false),
+                _buildTextField('Email', _inputController, Icons.email, false),
                 SizedBox(height: 10),
-                _buildTextField('Senha', _passwordController, Icons.lock, true),
+                _buildTextField('Senha', _hashPasswordController, Icons.lock, true),
                 SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
@@ -82,10 +148,7 @@ class LoginScreenState extends State<LoginScreen> {
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
                   ),
                   onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
+                    loginUser(context);
                   },
                   child: Text(
                     'Entrar',
