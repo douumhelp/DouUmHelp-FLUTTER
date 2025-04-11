@@ -6,19 +6,19 @@ import 'dart:convert';
 
 
 class Terms extends StatefulWidget {
-  final String name;
+  final String firstName;
   final String lastName;
-  final String phone;
+  final String telephone;
   final String email;
-  final String hashpassword;
+  final String hashPassword;
 
   const Terms({
     Key? key,
-    required this.name,
+    required this.firstName,
     required this.lastName,
-    required this.phone,
+    required this.telephone,
     required this.email,
-    required this.hashpassword,
+    required this.hashPassword,
   }) : super(key: key);
 
   @override
@@ -36,6 +36,7 @@ class _TermsState extends State<Terms> {
 
 
     Future<void> registerUser() async {
+      print('Chamou registerUser()');
     setState(() {
       isLoading = true;
       message = null;
@@ -44,13 +45,14 @@ class _TermsState extends State<Terms> {
     final url = Uri.parse('https://api.douumhelp.com.br/auth/register/pf');
 
     final body = {
-      'name': widget.name,
+      'firstName': widget.firstName,
       'lastName': widget.lastName,
-      'phone': widget.phone,
+      'telephone': widget.telephone,
       'email': widget.email,
-      'hashpassword': widget.hashpassword,
+      'hashPassword': widget.hashPassword,
       'cpf': cpfController.text,
     };
+
 
     try {
       final response = await http.post(
@@ -93,6 +95,7 @@ class _TermsState extends State<Terms> {
   );
 
   void _submitForm() async {
+    print('Clicou no botão continuar');
   if (_cpfController.text.isEmpty || _cpfController.text.length < 14) {
     _showMessage('Por favor, preencha um CPF válido');
     return;
@@ -103,7 +106,7 @@ class _TermsState extends State<Terms> {
     return;
   }
 
-  await registerUser(); // Envia os dados para a API
+  await registerUser(); 
 
   if (message == 'Usuário cadastrado com sucesso!') {
     Navigator.pushReplacement(

@@ -6,9 +6,10 @@ import 'package:http/http.dart' as http;
 
 Future<void> registerUser({
   required String name,
+  required String telephone,
   required String lastName,
   required String email,
-  required String hashpassword,
+  required String hashPassword,
 }) async {
   final url = Uri.parse('https://api.douumhelp.com.br/auth/register/pf');
 
@@ -46,7 +47,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   bool _passwordVisible = false;
   bool _buttonPressed = false;
 
-  TextEditingController nameController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController telephoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -56,21 +57,21 @@ class RegisterScreenState extends State<RegisterScreen> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
 
-    final name = nameController.text;
+    final firstName = firstNameController.text;
     final lastName = lastNameController.text;
     final email = emailController.text;
-    final phone = telephoneController.text;
-    final hashpassword = hashPasswordController.text;
+    final telephone = telephoneController.text;
+    final hashPassword = hashPasswordController.text;
 
       Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => Terms(
-          name: name,
+          firstName: firstName,
           lastName: lastName,
-          phone: phone,
+          telephone: telephone,
           email: email,
-          hashpassword: hashpassword,
+          hashPassword: hashPassword,
         ),
       ),
     );
@@ -110,7 +111,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      _buildTextField(nameController, 'Nome', Icons.person, true),
+                      _buildTextField(firstNameController, 'Nome', Icons.person, true),
                       _buildTextField(lastNameController, 'Sobrenome', Icons.person, true),
                       _buildTextField(telephoneController, 'Digite seu telefone (opcional)', Icons.phone, false),
                       _buildTextField(emailController, 'Digite seu e-mail', Icons.email, true, email: true),
