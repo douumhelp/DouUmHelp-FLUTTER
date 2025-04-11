@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'home.dart';
 import 'package:http/http.dart' as http;
-
-
+import 'dart:convert';
 
 
 class Terms extends StatefulWidget {
@@ -27,11 +26,65 @@ class Terms extends StatefulWidget {
 }
 
 class _TermsState extends State<Terms> {
+
   bool aceitoTermos = false;
   final TextEditingController _cpfController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  TextEditingController cpfController = TextEditingController();
+  final TextEditingController cpfController = TextEditingController();
   bool isLoading = false;
+  String? message;
+
+
+    Future<void> registerUser() async {
+    setState(() {
+      isLoading = true;
+      message = null;
+    });
+
+    final url = Uri.parse('https://api.douumhelp.com.br/auth/register/pf');
+
+    final body = {
+      'name': widget.name,
+      'lastName': widget.lastName,
+      'phone': widget.phone,
+      'email': widget.email,
+      'hashpassword': widget.hashpassword,
+      'cpf': cpfController.text,
+    };
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 201) {
+        setState(() {
+          message = 'Usuário cadastrado com sucesso!';
+        });
+
+      } else {
+        setState(() {
+          message = 'Erro ao cadastrar: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        message = 'Erro de conexão: $e';
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      registerUser();
+    }
+  }
 
   final cpfMaskFormatter = MaskTextInputFormatter(
     mask: '###.###.###-##',
@@ -39,22 +92,28 @@ class _TermsState extends State<Terms> {
     type: MaskAutoCompletionType.lazy,
   );
 
-  void _submitForm() {
-    if (_cpfController.text.isEmpty || _cpfController.text.length < 14) {
-      _showMessage('Por favor, preencha um CPF válido');
-      return;
-    }
+  void _submitForm() async {
+  if (_cpfController.text.isEmpty || _cpfController.text.length < 14) {
+    _showMessage('Por favor, preencha um CPF válido');
+    return;
+  }
 
-    if (!aceitoTermos) {
-      _showMessage('Você precisa aceitar os Termos e Condições');
-      return;
-    }
+  if (!aceitoTermos) {
+    _showMessage('Você precisa aceitar os Termos e Condições');
+    return;
+  }
 
+  await registerUser(); // Envia os dados para a API
+
+  if (message == 'Usuário cadastrado com sucesso!') {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => HomeScreen()),
     );
+  } else {
+    _showMessage(message ?? 'Erro desconhecido');
   }
+}
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -99,7 +158,7 @@ class _TermsState extends State<Terms> {
               ),
               const SizedBox(height: 8),
               Container(
-                decoration: BoxDecoration(
+                decoration: BoxDecoration(    
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Color(0xFFd1d5db)),
@@ -189,43 +248,3 @@ class _TermsState extends State<Terms> {
     );
   }
 }
-
-Future<void> registerUser({
-  required String name,
-  required String lastName,
-  required String phone,
-  required String email,
-  required String hashpassword,
-  required String cpf,
-}) async {
-  final url = Uri.parse('https://api.douumhelp.com.br/auth/register/pf');
-
-  final body = {
-    'name': name,
-    'lastName': lastName,
-    'phone': phone,
-    'email': email,
-    'hashpassword': hashpassword,
-    'cpf': cpf,
-  };
-
-  try {
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
-    );
-
-    if (response.statusCode == 201) {
-      // sucesso
-      print('Usuário registrado com sucesso');
-    } else {
-      // erro
-      print('Erro no registro: ${response.statusCode}');
-      print(response.body);
-    }
-  } catch (e) {
-    print('Erro ao registrar usuário: $e');
-  }
-}
-

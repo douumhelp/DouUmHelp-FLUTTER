@@ -18,7 +18,7 @@ Future<void> registerUser({
     body: jsonEncode({
       'firstName': String,
       'lastName': String,
-      'email': String,
+      'email': String,  
       'hashPassword': String,
       'telephone': String,
       'cpf': String,
