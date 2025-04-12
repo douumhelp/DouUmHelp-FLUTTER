@@ -1,17 +1,69 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String? userName;
+  bool loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    buscarUsuario();
+  }
+
+  Future<void> buscarUsuario() async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+    final userId = prefs.getInt('user_id');
+  
+   if (token == null || userId == null) {
+      print('Token ou ID do usuário não encontrados');
+      setState(() => loading = false);
+      return;
+    }
+
+      final response = await http.get(
+      Uri.parse('https://api.douumhelp.com.br/userpf/$userId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final usuario = jsonDecode(response.body);
+      setState(() {
+        userName = usuario['firstName']; 
+        loading = false;
+      });
+    } else {
+      print('Erro ao buscar usuário: ${response.statusCode}');
+      setState(() => loading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if(loading){
+      return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
+    );
+    }
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

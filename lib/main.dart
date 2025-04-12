@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
-import './Screens/Pages/login.dart'; // se for sua tela inicial
+import './Screens/Pages/login.dart'; 
 
-void main() {
-  runApp(MyApp());
+void main(List<String> args) {
+  final env = args.isNotEmpty ? args[0] : 'prod';
+  runApp(MyApp(env: env));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+    final String env;
+
+  const MyApp({super.key, required this.env});
 
   @override
   Widget build(BuildContext context) {
+    print('Ambiente atual: $env');
     return MaterialApp(
       title: 'Douum Help',
       theme: ThemeData(

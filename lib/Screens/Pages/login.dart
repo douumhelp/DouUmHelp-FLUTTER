@@ -20,21 +20,21 @@ class LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible = false;
 
    Future<void> loginUser(BuildContext context) async {
+      print('Cliquei em Entrar!');
   final input = _inputController.text.trim();
   final hashPassword = _hashPasswordController.text;
+  
 
   if (input.isEmpty || hashPassword.isEmpty) {
     _showMessage('Preencha todos os campos');
     return;
   }
 
-  final url = Uri.parse('https://api.douumhelp.com.br/auth/login');
+ final body = input.contains('@')
+      ? {'email': input, 'hashPassword': hashPassword}
+      : {'cpf': input, 'hashPassword': hashPassword};
 
-  final isCpf = RegExp(r'^\d{11}$').hasMatch(input); // verifica se são 11 dígitos
-  final body = {
-    if (isCpf) 'cpf': input else 'email': input,
-    'hashPassword': hashPassword,
-  };
+  final url = Uri.parse('https://api.douumhelp.com.br/auth/login');
 
   debugPrint('Enviando login com corpo: $body');
 
@@ -49,23 +49,26 @@ class LoginScreenState extends State<LoginScreen> {
     print('Resposta: ${response.statusCode} ${response.body}');
 
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
       final token = data['access_token'];
 
-      if (token != null) {
-       final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('auth_token', token);
+  if (token != null) {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('auth_token', token);
 
-       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-       );
-      }else {
+    // Salva o ID do usuário, se estiver incluso na resposta
+    final userId = data['user']?['id'];
+    if (userId != null) {
+      await prefs.setInt('user_id', userId);
+    }
+    
+    }else {
         _showMessage('Token não encontrado na resposta.');
       }
     } else {
-      _showMessage('Erro ao fazer login: ${response.statusCode}');
+      final error = jsonDecode(response.body)['message'] ?? 'Erro ao fazer login.';
+      _showMessage(error);
     }
   } catch (e) {
     _showMessage('Erro de conexão: $e');
@@ -79,6 +82,7 @@ void _showMessage(String message) {
       backgroundColor: Colors.redAccent,
     ),
   );
+  
 }
 
   @override
@@ -148,7 +152,7 @@ void _showMessage(String message) {
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
                   ),
                   onPressed: () {
-                    loginUser(context);
+                    
                   },
                   child: Text(
                     'Entrar',
