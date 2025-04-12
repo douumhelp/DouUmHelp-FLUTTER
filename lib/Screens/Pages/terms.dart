@@ -1,3 +1,4 @@
+import 'package:dou_um_help_flutter/Screens/Pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'home.dart';
@@ -111,7 +112,7 @@ class _TermsState extends State<Terms> {
   if (message == 'Usuário cadastrado com sucesso!') {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
   } else {
     _showMessage(message ?? 'Erro desconhecido');

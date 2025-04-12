@@ -19,51 +19,51 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _hashPasswordController = TextEditingController();
   bool _passwordVisible = false;
 
-   Future<void> loginUser(BuildContext context) async {
-      print('Cliquei em Entrar!');
+  Future<void> loginUser() async {
   final input = _inputController.text.trim();
-  final hashPassword = _hashPasswordController.text;
-  
+  final password = _hashPasswordController.text.trim();
 
-  if (input.isEmpty || hashPassword.isEmpty) {
+  if (input.isEmpty || password.isEmpty) {
     _showMessage('Preencha todos os campos');
     return;
   }
 
- final body = input.contains('@')
-      ? {'email': input, 'hashPassword': hashPassword}
-      : {'cpf': input, 'hashPassword': hashPassword};
+  final isEmail = input.contains('@');
+  final body = {
+    if (isEmail) 'email': input else 'cpf': input.replaceAll(RegExp(r'\D'), ''),
+    'hashPassword': password,
+  };
 
-  final url = Uri.parse('https://api.douumhelp.com.br/auth/login');
-
-  debugPrint('Enviando login com corpo: $body');
+  print('Enviando login com corpo: $body');
 
   try {
     final response = await http.post(
-      url,
+      Uri.parse('https://api.douumhelp.com.br/auth/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(body),
     );
 
-    print('Enviando login com corpo: $body');
-    print('Resposta: ${response.statusCode} ${response.body}');
-
+    print('STATUS: ${response.statusCode}');
+    print('BODY: ${response.body}');
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
-      final token = data['access_token'];
+      final token = data['token'];
+      final userId = data['user']?['id'];
 
-  if (token != null) {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('auth_token', token);
+      if (token != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth_token', token);
+        if (userId != null) {
+          await prefs.setInt('user_id', userId);
+        }
 
-    // Salva o ID do usuário, se estiver incluso na resposta
-    final userId = data['user']?['id'];
-    if (userId != null) {
-      await prefs.setInt('user_id', userId);
-    }
-    
-    }else {
+        print('Login OK! Redirecionando para Home...');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else {
         _showMessage('Token não encontrado na resposta.');
       }
     } else {
@@ -72,18 +72,19 @@ class LoginScreenState extends State<LoginScreen> {
     }
   } catch (e) {
     _showMessage('Erro de conexão: $e');
+    print('Erro de conexão: $e');
   }
 }
 
-void _showMessage(String message) {
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(
-      content: Text(message),
-      backgroundColor: Colors.redAccent,
-    ),
-  );
-  
-}
+
+    void _showMessage(String message) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -151,9 +152,7 @@ void _showMessage(String message) {
                     ),
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
                   ),
-                  onPressed: () {
-                    
-                  },
+                  onPressed: loginUser,
                   child: Text(
                     'Entrar',
                     style: GoogleFonts.outfit(

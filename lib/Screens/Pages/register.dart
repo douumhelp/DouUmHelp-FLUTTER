@@ -28,10 +28,8 @@ Future<void> registerUser({
 
   if (response.statusCode == 201) {
     print(' Cadastro realizado com sucesso!');
-    // Aqui você pode navegar para a próxima tela (ex: login ou home)
   } else {
     print(' Erro ao cadastrar: ${response.body}');
-    // Mostrar erro na tela, se quiser
   }
 }
 
