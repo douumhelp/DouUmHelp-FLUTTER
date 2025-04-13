@@ -209,20 +209,33 @@ IconData getIconForCategory(String name) {
                     ),
                   ),
 
-                const SizedBox(height: 24),
-                loadingCategorias
-                    ? const Center(child: CircularProgressIndicator())
-                    : GridView.count(
-                        crossAxisCount: 4,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        children: categorias.map((categoria) {
-                          return ServiceIcon(
-                            icon: getIconForCategory(categoria.name),
-                            label: categoria.name,
-                          );
-                        }).toList(),
+              const SizedBox(height: 24),
+              loadingCategorias
+                  ? const Center(child: CircularProgressIndicator())
+                  : SizedBox(
+                      height: 160,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Wrap(
+                          direction: Axis.vertical,
+                          spacing: 16,
+                          runSpacing: 16,
+                          children: categorias.map((categoria) {
+                            return SizedBox(
+                              width: 100,
+                              child: ServiceIcon(
+                                icon: getIconForCategory(categoria.name),
+                                label: categoria.name,
+                              ),
+                            );
+                          }).toList(),
+                        ),
                       ),
+                    ),
+
+
+
+                    
                 const SizedBox(height: 24),
                 Text(
                   'Melhores Prestadores do Mês na sua Região!',
