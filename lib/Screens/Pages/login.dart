@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'home.dart';       
 import 'register.dart';   
 import 'dart:convert';
+import 'package:dou_um_help_flutter/Services/loginService.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +20,7 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _hashPasswordController = TextEditingController();
   bool _passwordVisible = false;
 
-  Future<void> loginUser() async {
+ Future<void> loginUser() async {
 
     @override
     void initState() {
@@ -28,62 +29,35 @@ class LoginScreenState extends State<LoginScreen> {
       _hashPasswordController.clear();
     }
 
-_inputController.text = _inputController.text.trim();
-_hashPasswordController.text = _hashPasswordController.text.trim();
+  _inputController.text = _inputController.text.trim();
+  _hashPasswordController.text = _hashPasswordController.text.trim();
 
-  final input = _inputController.text.trim();
-  final password = _hashPasswordController.text.trim();
+  final input = _inputController.text;
+  final password = _hashPasswordController.text;
 
   if (input.isEmpty || password.isEmpty) {
     _showMessage('Preencha todos os campos');
     return;
   }
 
-  final isEmail = input.contains('@');
-  final body = {
-    if (isEmail) 'email': input else 'cpf': input.replaceAll(RegExp(r'\D'), ''),
-    'hashPassword': password,
-  };
+  final client = http.Client();
+  final prefs = await SharedPreferences.getInstance();
 
-  print('Enviando login com corpo: $body');
+  final success = await loginService(
+    input: input,
+    password: password,
+    client: client,
+    prefs: prefs,
+  );
 
-  try {
-    final response = await http.post(
-      Uri.parse('https://api.douumhelp.com.br/auth/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(body),
+  if (success) {
+    print('Login OK! Redirecionando para Home...');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
     );
-
-    print('STATUS: ${response.statusCode}');
-    print('BODY: ${response.body}');
-
-    if (response.statusCode == 200 || response.statusCode == 201) {
-      final data = jsonDecode(response.body);
-      print('CHAVES NO JSON: ${data.keys}');
-      print('BODY JSON: $data');
-      final token = data['token'];
-
-
-      if (token != null) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('auth_token', token); 
-
-        print('Login OK! Redirecionando para Home...');
-        
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-      } else {
-        _showMessage('Token não encontrado na resposta.');
-      }
-    } else {
-      final error = jsonDecode(response.body)['message'] ?? 'Erro ao fazer login.';
-      _showMessage(error);
-    }
-  } catch (e) {
-    _showMessage('Erro de conexão: $e');
-    print('Erro de conexão: $e');
+  } else {
+    _showMessage('Erro ao fazer login.');
   }
 }
 

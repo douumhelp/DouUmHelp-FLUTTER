@@ -4,6 +4,29 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+IconData getIconForCategory(String name) {
+  switch (name.toLowerCase()) {
+    case 'elétrica':
+      return Icons.flash_on;
+    case 'mecânica':
+      return Icons.build;
+    case 'serviços em geral':
+      return Icons.home_repair_service;
+    case 'pets':
+      return Icons.pets;
+    case 'pinturas':
+      return Icons.format_paint;
+    case 'hidráulica':
+      return Icons.water_damage;
+    case 'montagem':
+      return Icons.chair_alt;
+    case 'jardinagem':
+      return Icons.grass;
+    default:
+      return Icons.category; 
+  }
+}
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -94,28 +117,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
   
-IconData getIconForCategory(String name) {
-  switch (name.toLowerCase()) {
-    case 'elétrica':
-      return Icons.flash_on;
-    case 'mecânica':
-      return Icons.build;
-    case 'serviços em geral':
-      return Icons.home_repair_service;
-    case 'pets':
-      return Icons.pets;
-    case 'pinturas':
-      return Icons.format_paint;
-    case 'hidráulica':
-      return Icons.water_damage;
-    case 'montagem':
-      return Icons.chair_alt;
-    case 'jardinagem':
-      return Icons.grass;
-    default:
-      return Icons.category; // fallback padrão
-  }
-}
 
   @override
   Widget build(BuildContext context) {
