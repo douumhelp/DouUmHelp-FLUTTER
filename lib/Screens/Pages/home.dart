@@ -7,19 +7,62 @@ import 'dart:convert';
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+  
+}
+
+class Categoria {
+  final String id;
+  final String name;
+
+  Categoria({required this.id, required this.name});
+
+  factory Categoria.fromJson(Map<String, dynamic> json) {
+    return Categoria(
+      id: json['id'],
+      name: json['name'],
+    );
+  }
 }
 
 class _HomeScreenState extends State<HomeScreen> {
   String? userName;
   bool loading = true;
+  List<Categoria> categorias = [];
+  bool loadingCategorias = true;
 
   @override
   void initState() {
     super.initState();
     buscarUsuario();
+    buscarCategorias();
   }
+
+  Future<void> buscarCategorias() async {
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('auth_token'); // só se for protegida
+
+  final response = await http.get(
+    Uri.parse('https://api.douumhelp.com.br/categories'),
+    headers: {
+      'Content-Type': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final List data = jsonDecode(response.body);
+    setState(() {
+      categorias = data.map((json) => Categoria.fromJson(json)).toList();
+      loadingCategorias = false;
+    });
+  } else {
+    print('Erro ao buscar categorias: ${response.statusCode}');
+    setState(() => loadingCategorias = false);
+  }
+}
 
   Future<void> buscarUsuario() async {
     final prefs = await SharedPreferences.getInstance();
@@ -50,6 +93,29 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() => loading = false);
     }
   }
+  
+IconData getIconForCategory(String name) {
+  switch (name.toLowerCase()) {
+    case 'elétrica':
+      return Icons.flash_on;
+    case 'mecânica':
+      return Icons.build;
+    case 'serviços em geral':
+      return Icons.home_repair_service;
+    case 'pets':
+      return Icons.pets;
+    case 'pinturas':
+      return Icons.format_paint;
+    case 'hidráulica':
+      return Icons.water_damage;
+    case 'montagem':
+      return Icons.chair_alt;
+    case 'jardinagem':
+      return Icons.grass;
+    default:
+      return Icons.category; // fallback padrão
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -144,21 +210,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                 const SizedBox(height: 24),
-                GridView.count(
-                  crossAxisCount: 4,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: const [
-                    ServiceIcon(icon: Icons.flash_on, label: 'Elétrica'),
-                    ServiceIcon(icon: Icons.build, label: 'Mecânica'),
-                    ServiceIcon(icon: Icons.home_repair_service, label: 'Serviços em Geral'),
-                    ServiceIcon(icon: Icons.pets, label: 'Pets'),
-                    ServiceIcon(icon: Icons.format_paint, label: 'Pinturas'),
-                    ServiceIcon(icon: Icons.water_damage, label: 'Hidráulica'),
-                    ServiceIcon(icon: Icons.chair_alt, label: 'Montagem'),
-                    ServiceIcon(icon: Icons.grass, label: 'Jardinagem'),
-                  ],
-                ),
+                loadingCategorias
+                    ? const Center(child: CircularProgressIndicator())
+                    : GridView.count(
+                        crossAxisCount: 4,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: categorias.map((categoria) {
+                          return ServiceIcon(
+                            icon: getIconForCategory(categoria.name),
+                            label: categoria.name,
+                          );
+                        }).toList(),
+                      ),
                 const SizedBox(height: 24),
                 Text(
                   'Melhores Prestadores do Mês na sua Região!',
@@ -271,11 +335,15 @@ class ServiceIcon extends StatelessWidget {
       children: [
         Icon(icon, size: 32, color: Color(0xFFFACC15)),
         const SizedBox(height: 4),
-        Text(
-          label,
-          textAlign: TextAlign.center,
-          style: GoogleFonts.outfit(fontSize: 12),
-        ),
+        Flexible(
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: GoogleFonts.outfit(fontSize: 12),
+          ),
+        )
       ],
     );
   }
