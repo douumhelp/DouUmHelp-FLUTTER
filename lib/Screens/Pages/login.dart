@@ -20,6 +20,17 @@ class LoginScreenState extends State<LoginScreen> {
   bool _passwordVisible = false;
 
   Future<void> loginUser() async {
+
+    @override
+    void initState() {
+      super.initState();
+      _inputController.clear();
+      _hashPasswordController.clear();
+    }
+
+_inputController.text = _inputController.text.trim();
+_hashPasswordController.text = _hashPasswordController.text.trim();
+
   final input = _inputController.text.trim();
   final password = _hashPasswordController.text.trim();
 
@@ -48,17 +59,17 @@ class LoginScreenState extends State<LoginScreen> {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       final data = jsonDecode(response.body);
+      print('CHAVES NO JSON: ${data.keys}');
+      print('BODY JSON: $data');
       final token = data['token'];
-      final userId = data['user']?['id'];
+
 
       if (token != null) {
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('auth_token', token);
-        if (userId != null) {
-          await prefs.setInt('user_id', userId);
-        }
+        await prefs.setString('auth_token', token); 
 
         print('Login OK! Redirecionando para Home...');
+        
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
@@ -75,7 +86,6 @@ class LoginScreenState extends State<LoginScreen> {
     print('Erro de conexão: $e');
   }
 }
-
 
     void _showMessage(String message) {
       ScaffoldMessenger.of(context).showSnackBar(
