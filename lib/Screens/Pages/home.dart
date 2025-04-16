@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 
 IconData getIconForCategory(String name) {
@@ -65,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> buscarCategorias() async {
   final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('auth_token'); 
+  final token = prefs.getString('auth_token');
 
   final response = await http.get(
     Uri.parse('https://api.douumhelp.com.br/categories'),
@@ -90,13 +91,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> buscarUsuario() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('auth_token');
-    final userId = prefs.getString('id');
-  
-   if (token == null || userId == null) {
-      print('Token ou ID do usuário não encontrados');
-      setState(() => loading = false);
-      return;
-    }
+    final userId = prefs.getString('userId'); 
+
 
       final response = await http.get(
       Uri.parse('https://api.douumhelp.com.br/userpf/$userId'),
