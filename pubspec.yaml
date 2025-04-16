@@ -34,3 +34,4 @@ flutter:
 
   assets:
     - assets/logo.png
+    - assets/Termos/termo_de_uso.txt
