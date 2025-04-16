@@ -119,7 +119,6 @@ class LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // ação de esqueci a senha
                     },
                     child: Text(
                       'Esqueceu a sua senha?',

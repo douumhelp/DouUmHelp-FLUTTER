@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import 'mocks.mocks.dart';
-import 'package:dou_um_help_flutter/services/registerService.dart'; // ajuste o caminho
+import 'package:dou_um_help_flutter/services/registerService.dart'; 
 
 void main() {
   group('Registro API', () {
@@ -67,7 +67,7 @@ void main() {
   );
 
   expect(result, false);
-  verifyNever(prefs.setString('auth_token', any)); // garante que não salvou
+  verifyNever(prefs.setString('auth_token', any)); 
 });
 
 

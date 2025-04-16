@@ -4,6 +4,8 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/services.dart';
+
 
 
 class Terms extends StatefulWidget {
@@ -28,12 +30,21 @@ class Terms extends StatefulWidget {
 
 class _TermsState extends State<Terms> {
 
+  String termo = '';
+  bool loading = true;
+
   bool aceitoTermos = false;
   final TextEditingController _cpfController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final TextEditingController cpfController = TextEditingController();
   bool isLoading = false;
   String? message;
+
+  @override
+  void initState() {
+  super.initState();
+  carregarTermo();
+}
 
 
     Future<void> registerUser() async {
@@ -128,6 +139,14 @@ class _TermsState extends State<Terms> {
     );
   }
 
+    Future<void> carregarTermo() async {
+    final texto = await rootBundle.loadString('assets/Termos/termo_de_uso.txt');
+    setState(() {
+      termo = texto;
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -186,20 +205,25 @@ class _TermsState extends State<Terms> {
                   border: Border.all(color: Color(0xFFd1d5db)),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Termos e Condições',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. '
-                      'Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. '
-                      'Cras elementum ultrices diam...',
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                    ),
+                    const SizedBox(height: 8),
+                      loading
+                          ? const Center(child: CircularProgressIndicator())
+                          : SizedBox(
+                              height: 150, // ajuste como preferir
+                              child: SingleChildScrollView(
+                                child: Text(
+                                  termo,
+                                  style: const TextStyle(fontSize: 14, color: Colors.black),
+                                ),
+                              ),
+                            ),
                   ],
                 ),
               ),
