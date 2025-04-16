@@ -17,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _inputController = TextEditingController();
+  final TextEditingController _idUserController = TextEditingController();
   final TextEditingController _hashPasswordController = TextEditingController();
   bool _passwordVisible = false;
 
@@ -31,6 +32,8 @@ class LoginScreenState extends State<LoginScreen> {
 
   _inputController.text = _inputController.text.trim();
   _hashPasswordController.text = _hashPasswordController.text.trim();
+    _hashPasswordController.text = _hashPasswordController.text.trim();
+
 
   final input = _inputController.text;
   final password = _hashPasswordController.text;

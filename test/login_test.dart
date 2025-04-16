@@ -66,7 +66,7 @@ void main() {
   );
 
   expect(result, false);
-  verifyNever(prefs.setString('auth_token', any)); // verifica que não salvou
+  verifyNever(prefs.setString('auth_token', any)); 
 });
 
 }
