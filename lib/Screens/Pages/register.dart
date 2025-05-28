@@ -1,32 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'terms.dart'; // Importa a tela Terms
+import 'terms.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:dou_um_help_flutter/config.dart';
 
-class RegisterScreen extends StatefulWidget {
-  @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+Future<void> registerUser({
+  required String name,
+  required String telephone,
+  required String lastName,
+  required String email,
+  required String hashPassword,
+}) async {
+  final url = Uri.parse(ApiConfig.registerEndpoint);
+
+  final response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({
+      'firstName': String,
+      'lastName': String,
+      'email': String,  
+      'hashPassword': String,
+      'telephone': String,
+      'cpf': String,
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    print(' Cadastro realizado com sucesso!');
+  } else {
+    print(' Erro ao cadastrar: ${response.body}');
+  }
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
+  
+  @override
+  RegisterScreenState createState() => RegisterScreenState();
+}
+
+class RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
   bool _buttonPressed = false;
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController surnameController = TextEditingController();
-  TextEditingController phoneController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController telephoneController = TextEditingController();
   TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  TextEditingController hashPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
+
+    final firstName = firstNameController.text;
+    final lastName = lastNameController.text;
+    final email = emailController.text;
+    final telephone = telephoneController.text;
+    final hashPassword = hashPasswordController.text;
+
       Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => Terms(),
+      context,
+      MaterialPageRoute(
+        builder: (context) => Terms(
+          firstName: firstName,
+          lastName: lastName,
+          telephone: telephone,
+          email: email,
+          hashPassword: hashPassword,
         ),
-      );
+      ),
+    );
     }
   }
 
@@ -63,11 +110,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      _buildTextField(nameController, 'Nome', Icons.person, true),
-                      _buildTextField(surnameController, 'Sobrenome', Icons.person, true),
-                      _buildTextField(phoneController, 'Digite seu telefone (opcional)', Icons.phone, false),
+                      _buildTextField(firstNameController, 'Nome', Icons.person, true),
+                      _buildTextField(lastNameController, 'Sobrenome', Icons.person, true),
+                      _buildTextField(telephoneController, 'Digite seu telefone (opcional)', Icons.phone, false),
                       _buildTextField(emailController, 'Digite seu e-mail', Icons.email, true, email: true),
-                      _buildPasswordField(passwordController, 'Digite sua senha'),
+                      _buildPasswordField(hashPasswordController, 'Digite sua senha'),
                       _buildPasswordField(confirmPasswordController, 'Confirme sua senha', confirm: true),
                     ],
                   ),
@@ -159,7 +206,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            hint + ' *',
+            '$hint *',
             style: TextStyle(color: Colors.black),
           ),
           const SizedBox(height: 8),
@@ -187,7 +234,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
               validator: (value) {
                 if (value!.isEmpty) return 'Campo obrigatório';
-                if (confirm && value != passwordController.text) return 'As senhas não coincidem';
+                if (confirm && value != hashPasswordController.text) return 'As senhas não coincidem';
                 return null;
               },
             ),

@@ -1,17 +1,78 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'home.dart';       // Tela Home
-import 'register.dart';   // Tela de Registro
+import 'home.dart';       
+import 'register.dart';   
+import 'dart:convert';
+import 'package:dou_um_help_flutter/Services/loginService.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _inputController = TextEditingController();
+  final TextEditingController _idUserController = TextEditingController();
+  final TextEditingController _hashPasswordController = TextEditingController();
   bool _passwordVisible = false;
+
+ Future<void> loginUser() async {
+
+    @override
+    void initState() {
+      super.initState();
+      _inputController.clear();
+      _hashPasswordController.clear();
+    }
+
+  _inputController.text = _inputController.text.trim();
+  _hashPasswordController.text = _hashPasswordController.text.trim();
+    _hashPasswordController.text = _hashPasswordController.text.trim();
+
+
+  final input = _inputController.text;
+  final password = _hashPasswordController.text;
+
+  if (input.isEmpty || password.isEmpty) {
+    _showMessage('Preencha todos os campos');
+    return;
+  }
+
+  final client = http.Client();
+  final prefs = await SharedPreferences.getInstance();
+
+  final success = await loginService(
+    input: input,
+    password: password,
+    client: client,
+    prefs: prefs,
+  );
+
+  if (success) {
+    print('Login OK! Redirecionando para Home...');
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    );
+  } else {
+    _showMessage('Erro ao fazer login.');
+  }
+}
+
+    void _showMessage(String message) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -51,15 +112,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
-                _buildTextField('Email ou CPF', _emailController, Icons.email, false),
+                _buildTextField('Email', _inputController, Icons.email, false),
                 SizedBox(height: 10),
-                _buildTextField('Senha', _passwordController, Icons.lock, true),
+                _buildTextField('Senha', _hashPasswordController, Icons.lock, true),
                 SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // ação de esqueci a senha
                     },
                     child: Text(
                       'Esqueceu a sua senha?',
@@ -79,12 +139,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
                   ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
-                  },
+                  onPressed: loginUser,
                   child: Text(
                     'Entrar',
                     style: GoogleFonts.outfit(

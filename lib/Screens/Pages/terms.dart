@@ -1,16 +1,104 @@
+import 'package:dou_um_help_flutter/Screens/Pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'home.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:flutter/services.dart';
+
+
 
 class Terms extends StatefulWidget {
+  final String firstName;
+  final String lastName;
+  final String telephone;
+  final String email;
+  final String hashPassword;
+
+  const Terms({
+    Key? key,
+    required this.firstName,
+    required this.lastName,
+    required this.telephone,
+    required this.email,
+    required this.hashPassword,
+  }) : super(key: key);
+
   @override
   State<Terms> createState() => _TermsState();
 }
 
 class _TermsState extends State<Terms> {
+
+  String termo = '';
+  bool loading = true;
+
   bool aceitoTermos = false;
   final TextEditingController _cpfController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController cpfController = TextEditingController();
+  bool isLoading = false;
+  String? message;
+
+  @override
+  void initState() {
+  super.initState();
+  carregarTermo();
+}
+
+
+    Future<void> registerUser() async {
+      print('Chamou registerUser()');
+    setState(() {
+      isLoading = true;
+      message = null;
+    });
+
+    final url = Uri.parse('https://api-production-d036.up.railway.app/auth/register/pf');
+
+    final body = {
+      'firstName': widget.firstName,
+      'lastName': widget.lastName,
+      'telephone': widget.telephone,
+      'email': widget.email,
+      'hashPassword': widget.hashPassword,
+      'cpf': cpfController.text,
+    };
+
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(body),
+      );
+
+      if (response.statusCode == 201) {
+        setState(() {
+          message = 'Usuário cadastrado com sucesso!';
+        });
+
+      } else {
+        setState(() {
+          message = 'Erro ao cadastrar: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        message = 'Erro de conexão: $e';
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) {
+      registerUser();
+    }
+  }
 
   final cpfMaskFormatter = MaskTextInputFormatter(
     mask: '###.###.###-##',
@@ -18,22 +106,29 @@ class _TermsState extends State<Terms> {
     type: MaskAutoCompletionType.lazy,
   );
 
-  void _submitForm() {
-    if (_cpfController.text.isEmpty || _cpfController.text.length < 14) {
-      _showMessage('Por favor, preencha um CPF válido');
-      return;
-    }
+  void _submitForm() async {
+    print('Clicou no botão continuar');
+  if (_cpfController.text.isEmpty || _cpfController.text.length < 14) {
+    _showMessage('Por favor, preencha um CPF válido');
+    return;
+  }
 
-    if (!aceitoTermos) {
-      _showMessage('Você precisa aceitar os Termos e Condições');
-      return;
-    }
+  if (!aceitoTermos) {
+    _showMessage('Você precisa aceitar os Termos e Condições');
+    return;
+  }
 
+  await registerUser(); 
+
+  if (message == 'Usuário cadastrado com sucesso!') {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => HomeScreen()),
+      MaterialPageRoute(builder: (context) => LoginScreen()),
     );
+  } else {
+    _showMessage(message ?? 'Erro desconhecido');
   }
+}
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -44,10 +139,18 @@ class _TermsState extends State<Terms> {
     );
   }
 
+    Future<void> carregarTermo() async {
+    final texto = await rootBundle.loadString('assets/Termos/termo_de_uso.txt');
+    setState(() {
+      termo = texto;
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // fundo branco
+      backgroundColor: Colors.white, 
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -78,7 +181,7 @@ class _TermsState extends State<Terms> {
               ),
               const SizedBox(height: 8),
               Container(
-                decoration: BoxDecoration(
+                decoration: BoxDecoration(    
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(30),
                   border: Border.all(color: Color(0xFFd1d5db)),
@@ -102,20 +205,25 @@ class _TermsState extends State<Terms> {
                   border: Border.all(color: Color(0xFFd1d5db)),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       'Termos e Condições',
                       style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                     ),
-                    SizedBox(height: 8),
-                    Text(
-                      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. '
-                      'Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. '
-                      'Cras elementum ultrices diam...',
-                      style: TextStyle(fontSize: 14, color: Colors.black),
-                    ),
+                    const SizedBox(height: 8),
+                      loading
+                          ? const Center(child: CircularProgressIndicator())
+                          : SizedBox(
+                              height: 150, // ajuste como preferir
+                              child: SingleChildScrollView(
+                                child: Text(
+                                  termo,
+                                  style: const TextStyle(fontSize: 14, color: Colors.black),
+                                ),
+                              ),
+                            ),
                   ],
                 ),
               ),
