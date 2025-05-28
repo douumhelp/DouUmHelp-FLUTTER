@@ -6,19 +6,22 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.2
+  sdk: '>=3.2.3 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^6.1.0 
   cloud_firestore: ^4.13.0 
-  provider: ^6.1.0 
-  cupertino_icons: ^1.0.8
+  provider: ^6.1.1
+  cupertino_icons: ^1.0.2
   firebase_core: ^2.27.0
   firebase_auth: ^4.17.3
   shared_preferences: ^2.2.2
   jwt_decoder: ^2.0.1
+  http: ^1.1.2
+  get_it: ^7.6.4
+  carousel_pro_nullsafety: ^2.0.0
 
 
 dev_dependencies:
@@ -27,7 +30,7 @@ dev_dependencies:
   mockito: ^5.4.2
   build_runner: ^2.4.6
   mask_text_input_formatter: ^2.4.0
-  flutter_lints: ^5.0.0
+  flutter_lints: ^2.0.0
   
 
 flutter:

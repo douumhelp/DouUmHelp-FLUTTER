@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'home.dart';       
-import 'register.dart';   
-import 'dart:convert';
-import 'package:dou_um_help_flutter/Services/loginService.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
-
+import '../services/auth_service.dart';
+import 'home_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -18,61 +13,64 @@ class LoginScreen extends StatefulWidget {
 
 class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _inputController = TextEditingController();
-  final TextEditingController _idUserController = TextEditingController();
-  final TextEditingController _hashPasswordController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _passwordVisible = false;
+  bool _isLoading = false;
 
- Future<void> loginUser() async {
-
-    @override
-    void initState() {
-      super.initState();
-      _inputController.clear();
-      _hashPasswordController.clear();
-    }
-
-  _inputController.text = _inputController.text.trim();
-  _hashPasswordController.text = _hashPasswordController.text.trim();
-    _hashPasswordController.text = _hashPasswordController.text.trim();
-
-
-  final input = _inputController.text;
-  final password = _hashPasswordController.text;
-
-  if (input.isEmpty || password.isEmpty) {
-    _showMessage('Preencha todos os campos');
-    return;
+  @override
+  void initState() {
+    super.initState();
+    _inputController.clear();
+    _passwordController.clear();
   }
 
-  final client = http.Client();
-  final prefs = await SharedPreferences.getInstance();
+  @override
+  void dispose() {
+    _inputController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
-  final success = await loginService(
-    input: input,
-    password: password,
-    client: client,
-    prefs: prefs,
-  );
+  Future<void> _handleLogin() async {
+    final input = _inputController.text.trim();
+    final password = _passwordController.text.trim();
 
-  if (success) {
-    print('Login OK! Redirecionando para Home...');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
+    if (input.isEmpty || password.isEmpty) {
+      _showMessage('Preencha todos os campos');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final success = await AuthService.login(input, password);
+      
+      if (success) {
+        if (!mounted) return;
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
+      } else {
+        _showMessage('Credenciais inválidas');
+      }
+    } catch (e) {
+      _showMessage('Erro ao fazer login');
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+      ),
     );
-  } else {
-    _showMessage('Erro ao fazer login.');
   }
-}
-
-    void _showMessage(String message) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-    }
 
   @override
   Widget build(BuildContext context) {
@@ -93,7 +91,7 @@ class LoginScreenState extends State<LoginScreen> {
                     return Text("Logo não encontrada", style: GoogleFonts.outfit(color: Colors.red));
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   'Bem-vindo!',
                   style: GoogleFonts.outfit(
@@ -102,7 +100,7 @@ class LoginScreenState extends State<LoginScreen> {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Text(
                   'Acesse sua conta para continuar e aproveitar todas as funcionalidades.🛠️',
                   textAlign: TextAlign.center,
@@ -111,15 +109,16 @@ class LoginScreenState extends State<LoginScreen> {
                     color: Colors.grey[700],
                   ),
                 ),
-                SizedBox(height: 20),
-                _buildTextField('Email', _inputController, Icons.email, false),
-                SizedBox(height: 10),
-                _buildTextField('Senha', _hashPasswordController, Icons.lock, true),
-                SizedBox(height: 10),
+                const SizedBox(height: 20),
+                _buildTextField('Email ou CPF', _inputController, Icons.person, false),
+                const SizedBox(height: 10),
+                _buildTextField('Senha', _passwordController, Icons.lock, true),
+                const SizedBox(height: 10),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
+                      // Implementar recuperação de senha
                     },
                     child: Text(
                       'Esqueceu a sua senha?',
@@ -130,26 +129,29 @@ class LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFFFACC15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(999),
+                const SizedBox(height: 20),
+                if (_isLoading)
+                  const CircularProgressIndicator()
+                else
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFACC15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 50),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
-                  ),
-                  onPressed: loginUser,
-                  child: Text(
-                    'Entrar',
-                    style: GoogleFonts.outfit(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                    onPressed: _handleLogin,
+                    child: Text(
+                      'Entrar',
+                      style: GoogleFonts.outfit(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Text(
                   'Não tem conta?',
                   style: GoogleFonts.outfit(
@@ -161,7 +163,7 @@ class LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegisterScreen()),
+                      MaterialPageRoute(builder: (context) => const RegisterScreen()),
                     );
                   },
                   child: Text(
@@ -191,14 +193,6 @@ class LoginScreenState extends State<LoginScreen> {
         filled: true,
         fillColor: Colors.grey[200],
         prefixIcon: Icon(icon, color: Colors.grey[500]),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(999),
-          borderSide: BorderSide(color: Colors.grey[300]!),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(999),
-          borderSide: BorderSide(color: Color(0xFFFACC15), width: 2),
-        ),
         suffixIcon: isPassword
             ? IconButton(
                 icon: Icon(
@@ -212,7 +206,15 @@ class LoginScreenState extends State<LoginScreen> {
                 },
               )
             : null,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(999),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(999),
+          borderSide: const BorderSide(color: Color(0xFFFACC15), width: 2),
+        ),
       ),
     );
   }
-}
+} 
