@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:dou_um_help_flutter/config.dart';
 
 Future<bool> loginService({
   required String input,
@@ -19,7 +20,7 @@ Future<bool> loginService({
   print('Enviando login com corpo: $body');
 
   final response = await client.post(
-    Uri.parse('https://api.douumhelp.com.br/auth/login'),
+    Uri.parse(ApiConfig.loginEndpoint),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode(body),
   );

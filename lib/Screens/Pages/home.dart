@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
+import 'package:dou_um_help_flutter/config.dart';
 
 IconData getIconForCategory(String name) {
   switch (name.toLowerCase()) {
@@ -69,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final token = prefs.getString('auth_token');
 
   final response = await http.get(
-    Uri.parse('https://api.douumhelp.com.br/categories'),
+    Uri.parse(ApiConfig.categories),
     headers: {
       'Content-Type': 'application/json',
       if (token != null) 'Authorization': 'Bearer $token',
@@ -95,7 +96,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
       final response = await http.get(
-      Uri.parse('https://api.douumhelp.com.br/userpf/$userId'),
+      Uri.parse('https://api-production-d036.up.railway.app/userpf/$userId'),
       headers: {
         'Authorization': 'Bearer $token',
       },

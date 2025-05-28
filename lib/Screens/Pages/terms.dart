@@ -54,7 +54,7 @@ class _TermsState extends State<Terms> {
       message = null;
     });
 
-    final url = Uri.parse('https://api.douumhelp.com.br/auth/register/pf');
+    final url = Uri.parse('https://api-production-d036.up.railway.app/auth/register/pf');
 
     final body = {
       'firstName': widget.firstName,

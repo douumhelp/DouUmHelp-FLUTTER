@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dou_um_help_flutter/config.dart';
+
 
 Future<bool> registerService({
   required String name,
@@ -22,7 +24,7 @@ Future<bool> registerService({
   };
 
   final response = await client.post(
-    Uri.parse('https://api.douumhelp.com.br/auth/register/pf'),
+    Uri.parse(ApiConfig.registerEndpoint),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode(body),
   );
