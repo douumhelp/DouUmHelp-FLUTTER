@@ -25,18 +25,18 @@ class AddressListScreenState extends State<AddressListScreen> {
   Widget build(BuildContext context) {
     return Consumer<AddressViewModel>(
       builder: (context, addressViewModel, child) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              'Meus Endereços',
-              style: GoogleFonts.outfit(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Meus Endereços',
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
             backgroundColor: const Color(0xFFFACC15),
             foregroundColor: Colors.black,
-            actions: [
-              IconButton(
+        actions: [
+          IconButton(
                 icon: const Icon(Icons.refresh),
                 onPressed: () {
                   addressViewModel.refreshAddresses();
@@ -44,61 +44,61 @@ class AddressListScreenState extends State<AddressListScreen> {
               ),
               IconButton(
                 icon: const Icon(Icons.bug_report),
-                onPressed: () async {
+            onPressed: () async {
                   final isConnected = await AddressService.testApiConnection();
                   if (mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(isConnected ? 'API conectada!' : 'Erro na conexão com API'),
                         backgroundColor: isConnected ? Colors.green : Colors.red,
-                      ),
-                    );
-                  }
-                },
-              ),
-            ],
+                ),
+              );
+              }
+            },
           ),
+        ],
+      ),
           body: addressViewModel.isLoading
-              ? const Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
               : RefreshIndicator(
                   onRefresh: addressViewModel.refreshAddresses,
                   child: addressViewModel.addresses.isEmpty
-                      ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.location_off,
-                                size: 64,
-                                color: Colors.grey[400],
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                'Nenhum endereço cadastrado',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 18,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Toque no botão + para adicionar um endereço',
-                                style: GoogleFonts.outfit(
-                                  fontSize: 14,
-                                  color: Colors.grey[500],
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_off,
+                            size: 64,
+                            color: Colors.grey[400],
                           ),
-                        )
+                          const SizedBox(height: 16),
+                          Text(
+                            'Nenhum endereço cadastrado',
+                            style: GoogleFonts.outfit(
+                              fontSize: 18,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                                'Toque no botão + para adicionar um endereço',
+                            style: GoogleFonts.outfit(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                                textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    )
                       : ListView.builder(
-                          padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.all(16),
                           itemCount: addressViewModel.addresses.length,
-                          itemBuilder: (context, index) {
+                        itemBuilder: (context, index) {
                             final address = addressViewModel.addresses[index];
-                            return Card(
-                              margin: const EdgeInsets.only(bottom: 12),
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
                               elevation: 2,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -108,20 +108,20 @@ class AddressListScreenState extends State<AddressListScreen> {
                                 leading: CircleAvatar(
                                   backgroundColor: const Color(0xFFFACC15),
                                   child: Icon(
-                                    Icons.location_on,
+                                Icons.location_on,
                                     color: Colors.black,
                                   ),
-                                ),
-                                title: Text(
+                              ),
+                              title: Text(
                                   (address.label?.isNotEmpty == true) ? address.label! : 'Endereço ${index + 1}',
                                   style: GoogleFonts.outfit(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,
                                   ),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
                                     Text(
                                       '${address.addressLine}, ${address.addressNumber}',
                                       style: GoogleFonts.outfit(
@@ -166,8 +166,8 @@ class AddressListScreenState extends State<AddressListScreen> {
                                         color: Colors.grey[600],
                                       ),
                                     ),
-                                  ],
-                                ),
+                                ],
+                              ),
                                 trailing: PopupMenuButton<String>(
                                   onSelected: (value) async {
                                     if (value == 'edit') {
@@ -182,20 +182,20 @@ class AddressListScreenState extends State<AddressListScreen> {
                                       }
                                     }
                                   },
-                                  itemBuilder: (context) => [
-                                    const PopupMenuItem(
-                                      value: 'edit',
-                                      child: Row(
-                                        children: [
+                                itemBuilder: (context) => [
+                                  const PopupMenuItem(
+                                    value: 'edit',
+                                    child: Row(
+                                      children: [
                                           Icon(Icons.edit, color: Colors.blue),
-                                          SizedBox(width: 8),
-                                          Text('Editar'),
-                                        ],
-                                      ),
+                                        SizedBox(width: 8),
+                                        Text('Editar'),
+                                      ],
                                     ),
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                      ],
+                                    ),
+                                  ),
                             );
                           },
                         ),
@@ -204,18 +204,18 @@ class AddressListScreenState extends State<AddressListScreen> {
             onPressed: () {
               addressViewModel.setSelectedAddress(null);
               Navigator.push(
-                context,
-                MaterialPageRoute(
+                                      context,
+                                      MaterialPageRoute(
                   builder: (context) => const AddressFormScreen(),
-                ),
-              );
+                                      ),
+                                    );
             },
             backgroundColor: const Color(0xFFFACC15),
             foregroundColor: Colors.black,
             child: const Icon(Icons.add),
-          ),
-        );
-      },
+                            ),
+                          );
+                        },
     );
   }
 } 

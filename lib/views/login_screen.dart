@@ -31,77 +31,77 @@ class LoginScreenState extends State<LoginScreen> {
         // Se já estiver logado, navegar para home
         if (authViewModel.isLoggedIn) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()),
-            );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+        );
           });
-        }
+  }
 
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      'assets/logo.png',
-                      height: 100,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Text("Logo não encontrada", style: GoogleFonts.outfit(color: Colors.red));
-                      },
-                    ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  height: 100,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Text("Logo não encontrada", style: GoogleFonts.outfit(color: Colors.red));
+                  },
+                ),
                     SizedBox(height: 20),
-                    Text(
-                      'Bem-vindo!',
-                      style: GoogleFonts.outfit(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
+                Text(
+                  'Bem-vindo!',
+                  style: GoogleFonts.outfit(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
                     SizedBox(height: 8),
-                    Text(
-                      'Acesse sua conta para continuar e aproveitar todas as funcionalidades.🛠️',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(
-                        fontSize: 14,
-                        color: Colors.grey[700],
-                      ),
-                    ),
+                Text(
+                  'Acesse sua conta para continuar e aproveitar todas as funcionalidades.🛠️',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.outfit(
+                    fontSize: 14,
+                    color: Colors.grey[700],
+                  ),
+                ),
                     SizedBox(height: 20),
                     _buildTextField('Email', authViewModel.emailController, Icons.email, false),
                     SizedBox(height: 10),
                     _buildTextField('Senha', authViewModel.passwordController, Icons.lock, true),
                     SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          // Implementar recuperação de senha
-                        },
-                        child: Text(
-                          'Esqueceu a sua senha?',
-                          style: GoogleFonts.outfit(
-                            color: Colors.grey[500],
-                            fontSize: 14,
-                          ),
-                        ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      // Implementar recuperação de senha
+                    },
+                    child: Text(
+                      'Esqueceu a sua senha?',
+                      style: GoogleFonts.outfit(
+                        color: Colors.grey[500],
+                        fontSize: 14,
                       ),
                     ),
+                  ),
+                ),
                     SizedBox(height: 20),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFFFACC15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(999),
                       ),
+                        padding: EdgeInsets.symmetric(vertical: 14, horizontal: 50),
+                    ),
                       onPressed: authViewModel.isLoading ? null : () async {
                         await authViewModel.login();
                         if (authViewModel.isLoggedIn && mounted) {
@@ -121,35 +121,35 @@ class LoginScreenState extends State<LoginScreen> {
                               ),
                             )
                           : Text(
-                              'Entrar',
-                              style: GoogleFonts.outfit(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'Não tem conta?',
+                      'Entrar',
                       style: GoogleFonts.outfit(
                         color: Colors.black,
-                        fontSize: 14,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const RegisterScreen()),
-                        );
-                      },
-                      child: Text(
-                        'Crie agora!',
-                        style: GoogleFonts.outfit(
-                          color: Colors.yellow[700],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                  ),
+                    SizedBox(height: 20),
+                Text(
+                  'Não tem conta?',
+                  style: GoogleFonts.outfit(
+                    color: Colors.black,
+                    fontSize: 14,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const RegisterScreen()),
+                    );
+                  },
+                  child: Text(
+                    'Crie agora!',
+                    style: GoogleFonts.outfit(
+                      color: Colors.yellow[700],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
                         ),
                       ),
                     ),
@@ -185,14 +185,14 @@ class LoginScreenState extends State<LoginScreen> {
                           authViewModel.successMessage!,
                           style: GoogleFonts.outfit(
                             color: Colors.green[700],
-                          ),
-                        ),
-                      ),
-                  ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
+        ),
+      ),
         );
       },
     );

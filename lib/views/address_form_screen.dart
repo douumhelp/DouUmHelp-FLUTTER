@@ -20,26 +20,26 @@ class AddressFormScreenState extends State<AddressFormScreen> {
       builder: (context, addressViewModel, child) {
         final isEditing = addressViewModel.selectedAddress != null;
         
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
               isEditing ? 'Editar Endereço' : 'Novo Endereço',
-              style: GoogleFonts.outfit(
-                fontWeight: FontWeight.bold,
+          style: GoogleFonts.outfit(
+            fontWeight: FontWeight.bold,
               ),
             ),
             backgroundColor: const Color(0xFFFACC15),
             foregroundColor: Colors.black,
-          ),
+      ),
           body: addressViewModel.isLoading
               ? const Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
                   padding: const EdgeInsets.all(16),
                   child: Form(
-                    key: _formKey,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
+        key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
                         // CEP
                         TextFormField(
                           controller: addressViewModel.cepController,
@@ -53,18 +53,18 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                             filled: true,
                             fillColor: Colors.grey[50],
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor, insira o CEP';
-                            }
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira o CEP';
+                  }
                             if (value.length != 8) {
-                              return 'CEP deve ter 8 dígitos';
-                            }
-                            return null;
-                          },
-                        ),
+                    return 'CEP deve ter 8 dígitos';
+                  }
+                  return null;
+                },
+              ),
                         
-                        const SizedBox(height: 16),
+              const SizedBox(height: 16),
                         
                         // Rua (Address Line)
                         TextFormField(
@@ -78,15 +78,15 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                             filled: true,
                             fillColor: Colors.grey[50],
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
                               return 'Por favor, insira a rua';
-                            }
-                            return null;
-                          },
-                        ),
+                  }
+                  return null;
+                },
+              ),
                         
-                        const SizedBox(height: 16),
+              const SizedBox(height: 16),
                         
                         // Número (Address Number)
                         TextFormField(
@@ -100,13 +100,13 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                             filled: true,
                             fillColor: Colors.grey[50],
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor, insira o número';
-                            }
-                            return null;
-                          },
-                        ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira o número';
+                  }
+                  return null;
+                },
+              ),
                         
                         const SizedBox(height: 16),
                         
@@ -124,7 +124,7 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                           ),
                         ),
                         
-                        const SizedBox(height: 16),
+              const SizedBox(height: 16),
                         
                         // Complemento (Label)
                         TextFormField(
@@ -138,9 +138,9 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                             filled: true,
                             fillColor: Colors.grey[50],
                           ),
-                        ),
+              ),
                         
-                        const SizedBox(height: 16),
+              const SizedBox(height: 16),
                         
                         // Cidade (City)
                         TextFormField(
@@ -154,15 +154,15 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                             filled: true,
                             fillColor: Colors.grey[50],
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Por favor, insira a cidade';
-                            }
-                            return null;
-                          },
-                        ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira a cidade';
+                  }
+                  return null;
+                },
+              ),
                         
-                        const SizedBox(height: 16),
+              const SizedBox(height: 16),
                         
                         // Estado (State)
                         TextFormField(
@@ -176,18 +176,18 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                             filled: true,
                             fillColor: Colors.grey[50],
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
                               return 'Por favor, insira o estado';
-                            }
-                            return null;
-                          },
-                        ),
+                  }
+                  return null;
+                },
+              ),
                         
-                        const SizedBox(height: 32),
+              const SizedBox(height: 32),
                         
                         // Botão Salvar
-                        ElevatedButton(
+                ElevatedButton(
                           onPressed: addressViewModel.isLoading ? null : () async {
                             if (_formKey.currentState!.validate()) {
                               // Criar objeto Endereco com os dados do formulário
@@ -213,13 +213,13 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                               }
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFFACC15),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFACC15),
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
+                    shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                          ),
+                    ),
                           child: addressViewModel.isLoading
                               ? const SizedBox(
                                   height: 20,
@@ -231,9 +231,9 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                                 )
                               : Text(
                                   isEditing ? 'Atualizar' : 'Salvar',
-                                  style: GoogleFonts.outfit(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
+                    style: GoogleFonts.outfit(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
                                 ),
@@ -270,14 +270,14 @@ class AddressFormScreenState extends State<AddressFormScreen> {
                               addressViewModel.successMessage!,
                               style: GoogleFonts.outfit(
                                 color: Colors.green[700],
-                              ),
-                            ),
-                          ),
-                      ],
                     ),
                   ),
                 ),
-        );
+            ],
+          ),
+        ),
+      ),
+    );
       },
     );
   }

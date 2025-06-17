@@ -5,6 +5,8 @@ import '../viewmodels/home_viewmodel.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import 'login_screen.dart';
 import 'address_screen.dart';
+import 'solicitacao_servico_screen.dart';
+import 'solicitacoes_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -170,6 +172,46 @@ class HomeScreenState extends State<HomeScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const AddressScreen(),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.assignment_add, color: Colors.brown),
+                  title: Text(
+                    'Nova Solicitação',
+                    style: GoogleFonts.outfit(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onTap: () {
+                    print("Nova Solicitação - Botão pressionado!");
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SolicitacaoServicoScreen(),
+                      ),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.assignment, color: Colors.brown),
+                  title: Text(
+                    'Minhas Solicitações',
+                    style: GoogleFonts.outfit(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  onTap: () {
+                    print("Minhas Solicitações - Botão pressionado!");
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SolicitacoesListScreen(),
                       ),
                     );
                   },
@@ -385,7 +427,12 @@ class HomeScreenState extends State<HomeScreen> {
                               padding: const EdgeInsets.symmetric(vertical: 16),
                             ),
                             onPressed: () {
-                              // Implementar solicitação de help
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SolicitacaoServicoScreen(),
+                                ),
+                              );
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

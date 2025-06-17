@@ -7,7 +7,7 @@ import 'terms_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
-  
+
   @override
   RegisterScreenState createState() => RegisterScreenState();
 }
@@ -22,31 +22,31 @@ class RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Consumer<AuthViewModel>(
       builder: (context, authViewModel, child) {
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: SingleChildScrollView(
-                child: Column(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: SingleChildScrollView(
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+                children: [
                     SizedBox(height: 40),
                     Image.asset('assets/logo.png', width: 300, height: 150),
-                    Text(
+                  Text(
                       'Crie sua conta',
-                      style: GoogleFonts.outfit(
+                    style: GoogleFonts.outfit(
                         fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                       ),
                     ),
-                    Text(
+                  Text(
                       'Insira seus dados para começar',
-                      style: GoogleFonts.outfit(
+                    style: GoogleFonts.outfit(
                         fontSize: 16,
                         color: Colors.grey,
-                      ),
+                    ),
                     ),
                     SizedBox(height: 20),
                     Form(
@@ -61,7 +61,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                           _buildPasswordField(authViewModel.passwordController, 'Confirme sua senha', confirm: true),
                         ],
                       ),
-                    ),
+                  ),
                     SizedBox(height: 20),
                     GestureDetector(
                       onTap: () => Navigator.pushReplacement(
@@ -190,11 +190,11 @@ class RegisterScreenState extends State<RegisterScreen> {
                 hintStyle: TextStyle(color: Color(0xFF6B7280)),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-              ),
+            ),
               validator: required
                   ? (value) => value!.isEmpty ? 'Campo obrigatório' : null
                   : null,
-            ),
+        ),
           ),
         ],
       ),
@@ -218,21 +218,21 @@ class RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.circular(30),
             ),
             child: TextFormField(
-              controller: controller,
+      controller: controller,
               obscureText: confirm ? !_confirmPasswordVisible : !_passwordVisible,
-              decoration: InputDecoration(
+      decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 hintText: hint,
                 hintStyle: TextStyle(color: Color(0xFF6B7280)),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 suffixIcon: IconButton(
-                  icon: Icon(
+                icon: Icon(
                     confirm 
                         ? (_confirmPasswordVisible ? Icons.visibility : Icons.visibility_off)
                         : (_passwordVisible ? Icons.visibility : Icons.visibility_off),
                     color: Colors.grey,
-                  ),
+                ),
                   onPressed: () {
                     setState(() {
                       if (confirm) {
@@ -243,7 +243,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                 ),
-              ),
+        ),
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Campo obrigatório';
@@ -254,7 +254,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                 return null;
               },
             ),
-          ),
+        ),
         ],
       ),
     );
