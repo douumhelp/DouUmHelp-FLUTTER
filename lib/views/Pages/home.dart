@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
 import '../../utils/config.dart';
+import '../address_list_screen.dart';
 
 IconData getIconForCategory(String name) {
   switch (name.toLowerCase()) {
@@ -173,6 +174,28 @@ class _HomeScreenState extends State<HomeScreen> {
         ListTile(
           leading: const Icon(Icons.settings),
           title: Text('Configurações', style: GoogleFonts.outfit()),
+          onTap: () => Navigator.pop(context),
+        ),
+        ListTile(
+          leading: const Icon(Icons.location_on),
+          title: Text('Meus Endereços', style: GoogleFonts.outfit()),
+          onTap: () {
+            print('Botão Meus Endereços clicado');
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddressListScreen()),
+            );
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.history),
+          title: Text('Histórico de Serviços', style: GoogleFonts.outfit()),
+          onTap: () => Navigator.pop(context),
+        ),
+        ListTile(
+          leading: const Icon(Icons.favorite),
+          title: Text('Favoritos', style: GoogleFonts.outfit()),
           onTap: () => Navigator.pop(context),
         ),
         ListTile(

@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../services/auth_service.dart';
-import 'login_screen.dart';
 
 class TermsScreen extends StatelessWidget {
-  final Map<String, String> userData;
-
-  const TermsScreen({
-    Key? key,
-    required this.userData,
-  }) : super(key: key);
+  const TermsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -86,24 +79,13 @@ Ao utilizar o aplicativo Dou um Help, você concorda com estes termos e condiç�
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                onPressed: () => _handleAcceptTerms(context),
+                onPressed: () => Navigator.pop(context),
                 child: Text(
-                  'Aceitar e Criar Conta',
+                  'Entendi',
                   style: GoogleFonts.outfit(
                     color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(
-                  'Recusar',
-                  style: GoogleFonts.outfit(
-                    color: Colors.grey[700],
-                    fontSize: 16,
                   ),
                 ),
               ),
@@ -112,49 +94,5 @@ Ao utilizar o aplicativo Dou um Help, você concorda com estes termos e condiç�
         ),
       ),
     );
-  }
-
-  Future<void> _handleAcceptTerms(BuildContext context) async {
-    try {
-      final success = await AuthService.register(
-        firstName: userData['firstName']!,
-        lastName: userData['lastName']!,
-        email: userData['email']!,
-        telephone: userData['telephone']!,
-        hashPassword: userData['hashPassword']!,
-        cpf: userData['cpf']!,
-      );
-
-      if (!context.mounted) return;
-
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Conta criada com sucesso!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => const LoginScreen()),
-          (route) => false,
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Erro ao criar conta'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-      }
-    } catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Erro ao criar conta'),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
-    }
   }
 } 

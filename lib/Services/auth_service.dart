@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import '../utils/config.dart';
 
 class AuthService {
@@ -105,5 +106,51 @@ class AuthService {
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
+  }
+
+  // Função para obter o ID do usuário do JWT token
+  static Future<String?> getUserId() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      
+      if (token != null) {
+        final decodedToken = JwtDecoder.decode(token);
+        print('=== JWT DECODED ===');
+        print('Token completo: $decodedToken');
+        print('Campos disponíveis: ${decodedToken.keys.toList()}');
+        
+        // Tentar obter o ID do usuário do campo 'user'
+        final userData = decodedToken['user'];
+        if (userData != null && userData is Map<String, dynamic>) {
+          final userId = userData['id'];
+          print('User ID encontrado no campo user: $userId');
+          
+          if (userId != null && userId is String) {
+            print('User ID retornado como string: $userId');
+            return userId;
+          }
+        }
+        
+        // Fallback: tentar diferentes campos possíveis para o ID do usuário
+        final userId = decodedToken['sub'] ?? 
+                      decodedToken['userId'] ?? 
+                      decodedToken['user_id'] ?? 
+                      decodedToken['id'] ??
+                      decodedToken['user'];
+        
+        print('User ID encontrado (fallback): $userId');
+        
+        if (userId != null && userId is String) {
+          print('User ID retornado como string (fallback): $userId');
+          return userId;
+        }
+      }
+      print('Nenhum User ID encontrado no token');
+      return null;
+    } catch (e) {
+      print('Erro ao obter ID do usuário: $e');
+      return null;
+    }
   }
 } 
