@@ -227,8 +227,8 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
     }
 
     if (isValueChecked) {
-      final valorMin = double.tryParse(_minValueController.text) ?? 0;
-      final valorMax = double.tryParse(_maxValueController.text) ?? 0;
+      final valorMin = double.tryParse(_minValueController.text.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+      final valorMax = double.tryParse(_maxValueController.text.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
       
       if (valorMin >= valorMax) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -263,13 +263,17 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
         selectedTime.minute,
       );
 
+      // Corrigir valores para envio
+      final valorMin = double.tryParse(_minValueController.text.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+      final valorMax = double.tryParse(_maxValueController.text.replaceAll(RegExp(r'[^\d]'), '')) ?? 0;
+
       // Criar solicitação
       await _solicitacaoService.criarSolicitacao(
         categoryId: selectedCategoryId!,
         description: _descriptionController.text.trim(),
         scheduledDate: scheduledDateTime,
-        minValue: isValueChecked ? (double.tryParse(_minValueController.text) ?? 0) / 100 : 0,
-        maxValue: isValueChecked ? (double.tryParse(_maxValueController.text) ?? 0) / 100 : 0,
+        minValue: isValueChecked ? valorMin / 100 : 0,
+        maxValue: isValueChecked ? valorMax / 100 : 0,
         addressId: selectedAddressId!,
         userPFId: userPFId,
       );
