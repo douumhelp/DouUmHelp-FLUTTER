@@ -1,7 +1,6 @@
-import 'package:dou_um_help_flutter/Screens/Pages/login.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
-import 'home.dart';
+import 'login.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/services.dart';
@@ -55,6 +54,9 @@ class _TermsState extends State<Terms> {
     });
 
     final url = Uri.parse('https://api-production-d036.up.railway.app/auth/register/pf');
+    
+    // Limpar CPF (remover pontos e traços)
+    final cpf = cpfController.text.replaceAll(RegExp(r'[^\d]'), '');
 
     final body = {
       'firstName': widget.firstName,
@@ -62,9 +64,11 @@ class _TermsState extends State<Terms> {
       'telephone': widget.telephone,
       'email': widget.email,
       'hashPassword': widget.hashPassword,
-      'cpf': cpfController.text,
+      'cpf': cpf,
+      'role': 'pf',
     };
 
+    print('Enviando dados para cadastro: $body');
 
     try {
       final response = await http.post(
@@ -73,17 +77,20 @@ class _TermsState extends State<Terms> {
         body: jsonEncode(body),
       );
 
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
       if (response.statusCode == 201) {
         setState(() {
           message = 'Usuário cadastrado com sucesso!';
         });
-
       } else {
         setState(() {
-          message = 'Erro ao cadastrar: ${response.statusCode}';
+          message = 'Erro ao cadastrar: ${response.statusCode} - ${response.body}';
         });
       }
     } catch (e) {
+      print('Erro na requisição: $e');
       setState(() {
         message = 'Erro de conexão: $e';
       });
@@ -108,27 +115,30 @@ class _TermsState extends State<Terms> {
 
   void _submitForm() async {
     print('Clicou no botão continuar');
-  if (_cpfController.text.isEmpty || _cpfController.text.length < 14) {
-    _showMessage('Por favor, preencha um CPF válido');
-    return;
-  }
+    
+    // Validar CPF
+    final cpf = cpfController.text.replaceAll(RegExp(r'[^\d]'), '');
+    if (cpf.isEmpty || cpf.length != 11) {
+      _showMessage('Por favor, preencha um CPF válido (11 dígitos)');
+      return;
+    }
 
-  if (!aceitoTermos) {
-    _showMessage('Você precisa aceitar os Termos e Condições');
-    return;
-  }
+    if (!aceitoTermos) {
+      _showMessage('Você precisa aceitar os Termos e Condições');
+      return;
+    }
 
-  await registerUser(); 
+    await registerUser(); 
 
-  if (message == 'Usuário cadastrado com sucesso!') {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LoginScreen()),
-    );
-  } else {
-    _showMessage(message ?? 'Erro desconhecido');
+    if (message == 'Usuário cadastrado com sucesso!') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+      );
+    } else {
+      _showMessage(message ?? 'Erro desconhecido');
+    }
   }
-}
 
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(

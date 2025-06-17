@@ -43,6 +43,13 @@ class LoginScreenState extends State<LoginScreen> {
     setState(() => _isLoading = true);
 
     try {
+      // Testar conexão com a API primeiro
+      final apiOnline = await AuthService.testApiConnection();
+      if (!apiOnline) {
+        _showMessage('Erro de conexão com o servidor. Verifique sua internet.');
+        return;
+      }
+
       final success = await AuthService.login(input, password);
       
       if (success) {
@@ -55,6 +62,7 @@ class LoginScreenState extends State<LoginScreen> {
         _showMessage('Credenciais inválidas');
       }
     } catch (e) {
+      print('Erro no login: $e');
       _showMessage('Erro ao fazer login');
     } finally {
       if (mounted) {
@@ -110,7 +118,7 @@ class LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                _buildTextField('Email ou CPF', _inputController, Icons.person, false),
+                _buildTextField('Email', _inputController, Icons.person, false),
                 const SizedBox(height: 10),
                 _buildTextField('Senha', _passwordController, Icons.lock, true),
                 const SizedBox(height: 10),

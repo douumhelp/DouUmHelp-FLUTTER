@@ -1,5 +1,6 @@
-name: dou_um_help_flutter
-description: "A new Flutter project."
+name: DouUmHelp
+description: "DouUmHelp! é um aplicativo de ajuda para o usuário."
+
 
 publish_to: 'none'
 

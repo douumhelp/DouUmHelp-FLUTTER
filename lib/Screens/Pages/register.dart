@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'terms.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:dou_um_help_flutter/config.dart';
+import '../../utils/config.dart';
 
 Future<void> registerUser({
   required String name,

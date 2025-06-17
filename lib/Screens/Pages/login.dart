@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'home.dart';       
 import 'register.dart';   
-import 'dart:convert';
-import 'package:dou_um_help_flutter/Services/loginService.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../Services/auth_service.dart';
 
 
 
@@ -22,57 +21,44 @@ class LoginScreenState extends State<LoginScreen> {
   final TextEditingController _hashPasswordController = TextEditingController();
   bool _passwordVisible = false;
 
- Future<void> loginUser() async {
+  @override
+  void initState() {
+    super.initState();
+    _inputController.clear();
+    _hashPasswordController.clear();
+  }
 
-    @override
-    void initState() {
-      super.initState();
-      _inputController.clear();
-      _hashPasswordController.clear();
+  Future<void> loginUser() async {
+    final input = _inputController.text.trim();
+    final password = _hashPasswordController.text.trim();
+
+    if (input.isEmpty || password.isEmpty) {
+      _showMessage('Preencha todos os campos');
+      return;
     }
 
-  _inputController.text = _inputController.text.trim();
-  _hashPasswordController.text = _hashPasswordController.text.trim();
-    _hashPasswordController.text = _hashPasswordController.text.trim();
+    final success = await AuthService.login(input, password);
 
-
-  final input = _inputController.text;
-  final password = _hashPasswordController.text;
-
-  if (input.isEmpty || password.isEmpty) {
-    _showMessage('Preencha todos os campos');
-    return;
-  }
-
-  final client = http.Client();
-  final prefs = await SharedPreferences.getInstance();
-
-  final success = await loginService(
-    input: input,
-    password: password,
-    client: client,
-    prefs: prefs,
-  );
-
-  if (success) {
-    print('Login OK! Redirecionando para Home...');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const HomeScreen()),
-    );
-  } else {
-    _showMessage('Erro ao fazer login.');
-  }
-}
-
-    void _showMessage(String message) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(message),
-          backgroundColor: Colors.redAccent,
-        ),
+    if (success) {
+      print('Login OK! Redirecionando para Home...');
+      if (!context.mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
+    } else {
+      _showMessage('Credenciais inválidas. Verifique seu email e senha.');
     }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.redAccent,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

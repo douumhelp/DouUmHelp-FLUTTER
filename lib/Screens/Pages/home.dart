@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'dart:convert';
-import 'package:dou_um_help_flutter/config.dart';
+import '../../utils/config.dart';
 
 IconData getIconForCategory(String name) {
   switch (name.toLowerCase()) {
