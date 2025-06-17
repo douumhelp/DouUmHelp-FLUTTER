@@ -21,6 +21,7 @@ class _SolicitacoesListScreenState extends State<SolicitacoesListScreen> {
   void initState() {
     super.initState();
     _loadSolicitacoes();
+    _definirUserIdFixo(); // Definir userId fixo para testes
   }
 
   Future<void> _loadSolicitacoes() async {
@@ -32,7 +33,12 @@ class _SolicitacoesListScreenState extends State<SolicitacoesListScreen> {
       final prefs = await SharedPreferences.getInstance();
       userId = prefs.getString('userId') ?? 'user_${DateTime.now().millisecondsSinceEpoch}';
       
+      print('=== CARREGANDO SOLICITAÇÕES ===');
+      print('userId usado: $userId');
+      
       final lista = await _solicitacaoService.listarSolicitacoesPorUsuario(userId!);
+      
+      print('Solicitações encontradas: ${lista.length}');
       
       setState(() {
         solicitacoes = lista;
@@ -47,6 +53,13 @@ class _SolicitacoesListScreenState extends State<SolicitacoesListScreen> {
         isLoading = false;
       });
     }
+  }
+
+  // Método para definir userId fixo para testes
+  Future<void> _definirUserIdFixo() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userId', 'user_teste_123');
+    print('userId fixo definido: user_teste_123');
   }
 
   Color _getStatusColor(String status) {
@@ -288,9 +301,40 @@ class _SolicitacoesListScreenState extends State<SolicitacoesListScreen> {
           ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh, color: Colors.black),
-            onPressed: _loadSolicitacoes,
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              switch (value) {
+                case 'refresh':
+                  _loadSolicitacoes();
+                  break;
+                case 'set_user':
+                  _definirUserIdFixo().then((_) => _loadSolicitacoes());
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'refresh',
+                child: Row(
+                  children: [
+                    Icon(Icons.refresh),
+                    SizedBox(width: 8),
+                    Text('Recarregar'),
+                  ],
+                ),
+              ),
+              const PopupMenuItem(
+                value: 'set_user',
+                child: Row(
+                  children: [
+                    Icon(Icons.person),
+                    SizedBox(width: 8),
+                    Text('Definir User ID Fixo'),
+                  ],
+                ),
+              ),
+            ],
+            child: const Icon(Icons.more_vert, color: Colors.black),
           ),
         ],
       ),

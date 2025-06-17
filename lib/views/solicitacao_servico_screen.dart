@@ -252,7 +252,10 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
     try {
       // Obter ID do usuário do SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      final userPFId = prefs.getString('userId') ?? 'user_${DateTime.now().millisecondsSinceEpoch}';
+      final userPFId = prefs.getString('userId') ?? 'user_teste_123'; // Usar userId fixo para testes
+      
+      print('=== CRIANDO SOLICITAÇÃO ===');
+      print('userPFId usado: $userPFId');
 
       // Combinar data e hora
       final scheduledDateTime = DateTime(
@@ -534,9 +537,13 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
                         items: [
                           ...addresses.map((addr) => DropdownMenuItem(
                             value: addr.id,
-                            child: Text(
-                              '${addr.addressLine}, ${addr.addressNumber} - ${addr.neighborhood ?? ''}',
-                              style: const TextStyle(fontSize: 16),
+                            child: SizedBox(
+                              width: 220, // Ajuste conforme necessário
+                              child: Text(
+                                '${addr.addressLine}, ${addr.addressNumber} - ${addr.neighborhood ?? ''}',
+                                style: const TextStyle(fontSize: 16),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           )),
                           const DropdownMenuItem(

@@ -22,6 +22,12 @@ class SolicitacaoService {
     // Gerar ID único
     final id = DateTime.now().millisecondsSinceEpoch.toString();
     
+    print('=== CRIANDO SOLICITAÇÃO ===');
+    print('userPFId: $userPFId');
+    print('categoryId: $categoryId');
+    print('addressId: $addressId');
+    print('description: $description');
+    
     // Criar nova solicitação
     final solicitacao = SolicitacaoServico(
       id: id,
@@ -37,10 +43,12 @@ class SolicitacaoService {
     
     // Buscar solicitações existentes
     final solicitacoes = await listarSolicitacoes();
+    print('Solicitações existentes: ${solicitacoes.length}');
     solicitacoes.add(solicitacao);
     
     // Salvar no storage
     await _salvarSolicitacoes(solicitacoes);
+    print('Solicitação salva com sucesso! ID: $id');
     
     return solicitacao;
   }
@@ -65,8 +73,21 @@ class SolicitacaoService {
   
   // Listar solicitações por usuário
   Future<List<SolicitacaoServico>> listarSolicitacoesPorUsuario(String userPFId) async {
+    print('=== LISTANDO SOLICITAÇÕES POR USUÁRIO ===');
+    print('userPFId buscado: $userPFId');
+    
     final todas = await listarSolicitacoes();
-    return todas.where((s) => s.userPFId == userPFId).toList();
+    print('Total de solicitações: ${todas.length}');
+    
+    final doUsuario = todas.where((s) => s.userPFId == userPFId).toList();
+    print('Solicitações do usuário: ${doUsuario.length}');
+    
+    // Log de todas as solicitações para debug
+    for (var s in todas) {
+      print('- ID: ${s.id}, userPFId: ${s.userPFId}, descrição: ${s.description}');
+    }
+    
+    return doUsuario;
   }
   
   // Buscar solicitação por ID
