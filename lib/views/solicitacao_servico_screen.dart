@@ -436,65 +436,6 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
                       ),
                     ),
                   
-                  // Debug info (remover em produção)
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(8),
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[50],
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.blue),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Debug Info:',
-                          style: TextStyle(
-                            color: Colors.blue[800],
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        ),
-                        Text(
-                          'Categorias: ${categories.length}',
-                          style: TextStyle(
-                            color: Colors.blue[600],
-                            fontSize: 10,
-                          ),
-                        ),
-                        Text(
-                          'Endereços: ${addresses.length}',
-                          style: TextStyle(
-                            color: Colors.blue[600],
-                            fontSize: 10,
-                          ),
-                        ),
-                        Text(
-                          'Categoria selecionada: $selectedCategoryId',
-                          style: TextStyle(
-                            color: Colors.blue[600],
-                            fontSize: 10,
-                          ),
-                        ),
-                        Text(
-                          'Endereço selecionado: $selectedAddressId',
-                          style: TextStyle(
-                            color: Colors.blue[600],
-                            fontSize: 10,
-                          ),
-                        ),
-                        Text(
-                          'Rotas disponíveis: ${addresses.map((addr) => '/addresses/${addr.id}').join(', ')}',
-                          style: TextStyle(
-                            color: Colors.blue[600],
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   
                   // Endereço
                   const Text(

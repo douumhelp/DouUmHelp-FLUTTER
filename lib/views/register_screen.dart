@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
 import '../utils/format_utils.dart';
 import 'login_screen.dart';
+import 'success_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -89,7 +90,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                           if (authViewModel.successMessage != null && mounted) {
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) => const LoginScreen()),
+                              MaterialPageRoute(builder: (context) => const SuccessScreen()),
                             );
                           }
                         }

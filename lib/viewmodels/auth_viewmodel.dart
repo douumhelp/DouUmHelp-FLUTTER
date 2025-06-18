@@ -56,7 +56,7 @@ class AuthViewModel extends BaseViewModel {
       final nameParts = FormatUtils.formatName(nameController.text).split(' ');
       final firstName = nameParts.first;
       final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
-
+      
       final success = await AuthService.register(
         firstName: firstName,
         lastName: lastName,
@@ -88,7 +88,6 @@ class AuthViewModel extends BaseViewModel {
       
       if (token != null) {
         _userToken = token;
-        _isLoggedIn = true;
         _userEmail = prefs.getString('user_email');
       }
     });
@@ -101,6 +100,13 @@ class AuthViewModel extends BaseViewModel {
       _userToken = null;
       _userRole = null;
       _userEmail = null;
+      
+      // Limpar também os controllers
+      emailController.clear();
+      passwordController.clear();
+      nameController.clear();
+      cpfController.clear();
+      phoneController.clear();
     });
   }
 

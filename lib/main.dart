@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'views/login_screen.dart';
 import 'views/home_screen.dart';
 import 'views/register_screen.dart';
+import 'views/success_screen.dart';
 import 'viewmodels/auth_viewmodel.dart';
 import 'viewmodels/category_viewmodel.dart';
 import 'viewmodels/address_viewmodel.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginScreen(),
           '/home': (context) => const HomeScreen(), 
           '/register': (context) => const RegisterScreen(),
+          '/success': (context) => const SuccessScreen(),
         },
       ),
     );

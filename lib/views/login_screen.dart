@@ -18,27 +18,16 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    // Verificar status de login ao inicializar
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<AuthViewModel>().checkLoginStatus();
-    });
+    // Removida verificação automática de status de login
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthViewModel>(
       builder: (context, authViewModel, child) {
-        // Se já estiver logado, navegar para home
-        if (authViewModel.isLoggedIn) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomeScreen()),
-        );
-          });
-  }
-
-    return Scaffold(
+        // Removida verificação automática de redirecionamento
+        
+        return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: Padding(
