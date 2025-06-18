@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/address_service.dart';
 import '../services/cep_service.dart';
 import '../models/endereco.dart';
+import '../utils/format_utils.dart';
 import 'base_viewmodel.dart';
 
 class AddressViewModel extends BaseViewModel {
@@ -75,11 +76,7 @@ class AddressViewModel extends BaseViewModel {
 
   // Formatar CEP (00000-000)
   String _formatCep(String cep) {
-    final cepLimpo = cep.replaceAll(RegExp(r'[^\d]'), '');
-    if (cepLimpo.length == 8) {
-      return '${cepLimpo.substring(0, 5)}-${cepLimpo.substring(5)}';
-    }
-    return cep;
+    return FormatUtils.formatCep(cep);
   }
 
   // Consultar CEP via API

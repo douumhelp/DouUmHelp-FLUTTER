@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/solicitacao_servico.dart';
 import '../models/categoria.dart';
 import '../models/endereco.dart';
+import '../utils/format_utils.dart';
 
 class SolicitacaoService {
   static const String _storageKey = 'solicitacoes_servico';
@@ -157,26 +158,22 @@ class SolicitacaoService {
   
   // Formatar valor monetário
   String formatarValor(double valor) {
-    return 'R\$ ${valor.toStringAsFixed(2).replaceAll('.', ',')}';
+    return FormatUtils.formatCurrency(valor);
   }
   
   // Formatar data
   String formatarData(DateTime data) {
-    final hoje = DateTime.now();
-    final amanha = hoje.add(Duration(days: 1));
-    
-    if (data.year == hoje.year && data.month == hoje.month && data.day == hoje.day) {
-      return 'Hoje';
-    } else if (data.year == amanha.year && data.month == amanha.month && data.day == amanha.day) {
-      return 'Amanhã';
-    } else {
-      return '${data.day.toString().padLeft(2, '0')}/${data.month.toString().padLeft(2, '0')}/${data.year}';
-    }
+    return FormatUtils.formatDate(data);
   }
   
   // Formatar hora
   String formatarHora(DateTime data) {
-    return '${data.hour.toString().padLeft(2, '0')}:00';
+    return FormatUtils.formatTime(data);
+  }
+  
+  // Formatar data e hora para exibição
+  String formatarDataHora(DateTime data) {
+    return FormatUtils.formatDisplayDateTime(data);
   }
   
   // Obter status em português

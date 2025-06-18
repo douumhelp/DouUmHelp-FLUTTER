@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/auth_service.dart';
+import '../utils/format_utils.dart';
 import 'base_viewmodel.dart';
 
 class AuthViewModel extends BaseViewModel {
@@ -32,7 +33,7 @@ class AuthViewModel extends BaseViewModel {
   Future<void> login() async {
     await executeAsync(() async {
       final success = await AuthService.login(
-        emailController.text.trim(),
+        FormatUtils.formatEmail(emailController.text),
         passwordController.text,
       );
 
@@ -52,31 +53,43 @@ class AuthViewModel extends BaseViewModel {
 
   Future<void> register() async {
     await executeAsync(() async {
-      final nameParts = nameController.text.trim().split(' ');
+      final nameParts = FormatUtils.formatName(nameController.text).split(' ');
       final firstName = nameParts.first;
-      final lastName = nameParts.skip(1).join(' ');
-      
+      final lastName = nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '';
+
       final success = await AuthService.register(
         firstName: firstName,
         lastName: lastName,
-        email: emailController.text.trim(),
-        hashPassword: passwordController.text,
+        email: FormatUtils.formatEmail(emailController.text),
         telephone: phoneController.text.trim(),
-        cpf: cpfController.text.trim(),
+        hashPassword: passwordController.text,
+        cpf: cpfController.text,
       );
 
       if (success) {
-        setSuccess('Registro realizado com sucesso!');
+        setSuccess('Conta criada com sucesso!');
         
         // Limpar campos
         nameController.clear();
-        emailController.clear();
-        passwordController.clear();
         cpfController.clear();
         phoneController.clear();
-        _selectedRole = null;
+        emailController.clear();
+        passwordController.clear();
       } else {
-        throw Exception('Erro no registro');
+        throw Exception('Erro ao criar conta');
+      }
+    });
+  }
+
+  Future<void> checkLoginStatus() async {
+    await executeAsync(() async {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      
+      if (token != null) {
+        _userToken = token;
+        _isLoggedIn = true;
+        _userEmail = prefs.getString('user_email');
       }
     });
   }
@@ -88,19 +101,6 @@ class AuthViewModel extends BaseViewModel {
       _userToken = null;
       _userRole = null;
       _userEmail = null;
-      setSuccess('Logout realizado com sucesso!');
-    });
-  }
-
-  Future<void> checkLoginStatus() async {
-    await executeAsync(() async {
-      // Verificar se há token salvo
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('auth_token');
-      if (token != null) {
-        _userToken = token;
-        _isLoggedIn = true;
-      }
     });
   }
 

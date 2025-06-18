@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/auth_viewmodel.dart';
+import '../utils/format_utils.dart';
 import 'login_screen.dart';
-import 'terms_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -17,6 +18,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
   bool _buttonPressed = false;
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -54,11 +56,11 @@ class RegisterScreenState extends State<RegisterScreen> {
                       child: Column(
                         children: [
                           _buildTextField(authViewModel.nameController, 'Nome', Icons.person, true),
-                          _buildTextField(authViewModel.cpfController, 'CPF', Icons.badge, true),
-                          _buildTextField(authViewModel.phoneController, 'Digite seu telefone (opcional)', Icons.phone, false),
+                          _buildTextField(authViewModel.cpfController, 'CPF', Icons.badge, true, isCpf: true),
+                          _buildTextField(authViewModel.phoneController, 'Digite seu telefone (opcional)', Icons.phone, false, isPhone: true),
                           _buildTextField(authViewModel.emailController, 'Digite seu e-mail', Icons.email, true, email: true),
                           _buildPasswordField(authViewModel.passwordController, 'Digite sua senha'),
-                          _buildPasswordField(authViewModel.passwordController, 'Confirme sua senha', confirm: true),
+                          _buildPasswordField(_confirmPasswordController, 'Confirme sua senha', confirm: true),
                         ],
                       ),
                   ),
@@ -165,7 +167,7 @@ class RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, IconData icon, bool required, {bool email = false}) {
+  Widget _buildTextField(TextEditingController controller, String hint, IconData icon, bool required, {bool email = false, bool isCpf = false, bool isPhone = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
       child: Column(
@@ -183,7 +185,15 @@ class RegisterScreenState extends State<RegisterScreen> {
             ),
             child: TextFormField(
               controller: controller,
-              keyboardType: email ? TextInputType.emailAddress : TextInputType.text,
+              keyboardType: email ? TextInputType.emailAddress : 
+                           isCpf || isPhone ? TextInputType.number : TextInputType.text,
+              inputFormatters: isCpf ? [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(11),
+              ] : isPhone ? [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(11),
+              ] : null,
               decoration: InputDecoration(
                 prefixIcon: Icon(icon, color: Colors.grey),
                 hintText: hint,
@@ -194,6 +204,21 @@ class RegisterScreenState extends State<RegisterScreen> {
               validator: required
                   ? (value) => value!.isEmpty ? 'Campo obrigatório' : null
                   : null,
+              onChanged: (value) {
+                if (isCpf && value.length == 11) {
+                  final formattedCpf = FormatUtils.formatCpf(value);
+                  controller.text = formattedCpf;
+                  controller.selection = TextSelection.fromPosition(
+                    TextPosition(offset: formattedCpf.length),
+                  );
+                } else if (isPhone && value.length == 11) {
+                  final formattedPhone = FormatUtils.formatPhone(value);
+                  controller.text = formattedPhone;
+                  controller.selection = TextSelection.fromPosition(
+                    TextPosition(offset: formattedPhone.length),
+                  );
+                }
+              },
         ),
           ),
         ],
@@ -218,21 +243,20 @@ class RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.circular(30),
             ),
             child: TextFormField(
-      controller: controller,
+              controller: controller,
               obscureText: confirm ? !_confirmPasswordVisible : !_passwordVisible,
-      decoration: InputDecoration(
+              decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 hintText: hint,
                 hintStyle: TextStyle(color: Color(0xFF6B7280)),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 suffixIcon: IconButton(
-                icon: Icon(
-                    confirm 
-                        ? (_confirmPasswordVisible ? Icons.visibility : Icons.visibility_off)
-                        : (_passwordVisible ? Icons.visibility : Icons.visibility_off),
+                  icon: Icon(
+                    confirm ? (_confirmPasswordVisible ? Icons.visibility : Icons.visibility_off)
+                           : (_passwordVisible ? Icons.visibility : Icons.visibility_off),
                     color: Colors.grey,
-                ),
+                  ),
                   onPressed: () {
                     setState(() {
                       if (confirm) {
@@ -243,20 +267,26 @@ class RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                 ),
-        ),
+              ),
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Campo obrigatório';
                 }
-                if (confirm && value != controller.text) {
+                if (confirm && value != _confirmPasswordController.text) {
                   return 'As senhas não coincidem';
                 }
                 return null;
               },
             ),
-        ),
+          ),
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _confirmPasswordController.dispose();
+    super.dispose();
   }
 } 

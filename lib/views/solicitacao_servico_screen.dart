@@ -8,6 +8,7 @@ import '../models/solicitacao_servico.dart';
 import '../Services/solicitacao_service.dart';
 import '../Services/category_service.dart';
 import '../Services/address_service.dart';
+import '../utils/format_utils.dart';
 import 'address_screen.dart';
 import '../viewmodels/address_viewmodel.dart';
 
@@ -128,21 +129,6 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
     }
   }
 
-  String _formatarPreco(String valor) {
-    if (valor.isEmpty) return '';
-    
-    // Remove tudo que não é número
-    final numero = valor.replaceAll(RegExp(r'[^\d]'), '');
-    
-    if (numero.isEmpty) return '';
-    
-    // Converte para número e divide por 100 para obter o valor em reais
-    final valorEmReais = (double.parse(numero) / 100).toStringAsFixed(2);
-    
-    // Formata com R$ e vírgula
-    return 'R\$ ${valorEmReais.replaceAll('.', ',')}';
-  }
-
   void _handleMinValueChange(String texto) {
     final apenasNumeros = texto.replaceAll(RegExp(r'[^\d]'), '');
     final novoValorMin = double.tryParse(apenasNumeros) ?? 0;
@@ -212,7 +198,7 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
         selectedDate.day == today.day) {
       return 'Hoje';
     }
-    return '${selectedDate.day.toString().padLeft(2, '0')}/${selectedDate.month.toString().padLeft(2, '0')}/${selectedDate.year}';
+    return FormatUtils.formatDate(selectedDate);
   }
 
   Future<void> _handleSubmit() async {
@@ -839,7 +825,7 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          _minValueController.text = _formatarPreco(value);
+                          _minValueController.text = FormatUtils.formatCurrencyFromString(value);
                         });
                       },
                     ),
@@ -872,7 +858,7 @@ class _SolicitacaoServicoScreenState extends State<SolicitacaoServicoScreen> {
                       ),
                       onChanged: (value) {
                         setState(() {
-                          _maxValueController.text = _formatarPreco(value);
+                          _maxValueController.text = FormatUtils.formatCurrencyFromString(value);
                         });
                       },
                     ),

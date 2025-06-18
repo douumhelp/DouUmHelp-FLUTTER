@@ -199,36 +199,35 @@ class LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildTextField(String hint, TextEditingController controller, IconData icon, bool isPassword) {
-    return TextField(
-      controller: controller,
-      obscureText: isPassword ? !_passwordVisible : false,
-      decoration: InputDecoration(
-        hintText: hint,
-        hintStyle: GoogleFonts.outfit(color: Colors.grey[500]),
-        filled: true,
-        fillColor: Colors.grey[200],
-        prefixIcon: Icon(icon, color: Colors.grey[500]),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(999),
-          borderSide: BorderSide(color: Colors.grey[300]!),
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFFD1D5DB),
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: TextFormField(
+        controller: controller,
+        obscureText: isPassword && !_passwordVisible,
+        keyboardType: isPassword ? TextInputType.visiblePassword : TextInputType.emailAddress,
+        decoration: InputDecoration(
+          prefixIcon: Icon(icon, color: Colors.grey),
+          hintText: hint,
+          hintStyle: TextStyle(color: Color(0xFF6B7280)),
+          border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          suffixIcon: isPassword
+              ? IconButton(
+                  icon: Icon(
+                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Colors.grey,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _passwordVisible = !_passwordVisible;
+                    });
+                  },
+                )
+              : null,
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(999),
-          borderSide: BorderSide(color: Color(0xFFFACC15), width: 2),
-        ),
-        suffixIcon: isPassword
-            ? IconButton(
-                icon: Icon(
-                  _passwordVisible ? Icons.visibility : Icons.visibility_off,
-                  color: Colors.grey[500],
-                ),
-                onPressed: () {
-                  setState(() {
-                    _passwordVisible = !_passwordVisible;
-                  });
-                },
-              )
-            : null,
       ),
     );
   }
