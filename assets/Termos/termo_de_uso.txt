@@ -1,0 +1,35 @@
+TERMO DE USO DO APLICATIVO DO CLIENTE - DOU UM HELP!
+1. INTRODUÇÃO O presente Termo de Uso regula a utilização do aplicativo Dou Um Help! pelo cliente, estabelecendo diretrizes, direitos e deveres das partes envolvidas. Ao acessar e utilizar o aplicativo, o usuário declara que leu, compreendeu e concorda com todas as condições aqui estabelecidas.
+2. DEFINIÇÕES
+Plataforma: Aplicativo Dou Um Help!, que conecta clientes a prestadores de serviço.
+Cliente: Usuário que contrata serviços por meio do aplicativo.
+Prestador de Serviço: Profissional cadastrado para oferecer serviços aos clientes.
+Conta de Usuário: Registro pessoal no aplicativo, contendo dados cadastrais e histórico de uso.
+3. CADASTRO E USO DA PLATAFORMA 
+    3.1. Para utilizar o aplicativo, o cliente deve fornecer informações verídicas e atualizadas, incluindo nome, CPF, telefone e e-mail. 
+    3.2. O cliente é responsável por manter a confidencialidade de seu login e senha, não podendo compartilhá-los com terceiros. 
+    3.3. A plataforma se reserva o direito de suspender ou excluir contas em caso de uso indevido, informações falsas ou violação dos termos.
+4. OBRIGAÇÕES DO USUÁRIO (CLIENTE) 
+    4.1. Utilizar o aplicativo de forma lícita, respeitando as leis vigentes e os direitos de terceiros. 
+    4.2. Não fornecer informações falsas ou enganosas ao criar a conta ou ao solicitar serviços. 
+    4.3. Respeitar os prestadores de serviço, mantendo um comportamento ético e respeitoso durante a contratação e execução dos serviços. 4.4. Realizar o pagamento dos serviços contratados conforme estabelecido na plataforma. 4.5. Não utilizar a plataforma para atividades ilegais, abusivas ou discriminatórias. 4.6. Fornecer feedbacks verídicos e justos sobre os serviços prestados, evitando calúnia ou difamação. 4.7. Não solicitar serviços fora da plataforma para evitar fraudes e manter a segurança das transações. 4.8. Informar imediatamente a plataforma em caso de problemas com o prestador ou dúvidas sobre pagamentos. 4.9. Zelar pela segurança dos dados pessoais, evitando compartilhá-los com terceiros sem necessidade. 4.10. O cliente está proibido de realizar o pagamento dos serviços fora do aplicativo. Todos os pagamentos devem ser efetuados exclusivamente dentro da plataforma, garantindo segurança e transparência para ambas as partes.
+5. OBRIGAÇÕES DA PLATAFORMA 
+    5.1. Garantir a disponibilidade do aplicativo, salvo em casos de manutenção ou problemas técnicos. 
+    5.2. Oferecer suporte ao cliente para esclarecimento de dúvidas e resolução de problemas. 
+    5.3. Proteger os dados dos usuários conforme a legislação vigente de proteção de dados. 
+    5.4. Monitorar e, se necessário, tomar medidas contra usuários que descumpram os termos de uso.
+6. POLÍTICA DE PAGAMENTO 
+    6.1. Os pagamentos serão realizados por meio dos métodos disponíveis na plataforma. 
+    6.2. O cliente é responsável por verificar os valores e condições antes de concluir uma transação. 
+    6.3. Em caso de cancelamento ou reembolso, serão aplicadas as políticas específicas descritas no aplicativo. 
+    6.4. O pagamento deve ser realizado exclusivamente dentro do aplicativo. Quando um serviço for solicitado e aprovado, um link de pagamento será gerado. Caso o usuário tente realizar o pagamento fora do aplicativo, o prestador de serviço não estará autorizado a realizar o atendimento e o aplicativo não se responsabiliza por qualquer situação que ocorra fora da plataforma.
+7. POLÍTICA DE PRIVACIDADE 
+    7.1. Os dados fornecidos pelo cliente serão utilizados apenas para operações relacionadas ao uso do aplicativo. 
+    7.2. O Dou Um Help! adota medidas de segurança para proteger os dados dos usuários contra acessos não autorizados.
+8. CANCELAMENTO E EXCLUSÃO DE CONTA 8.1. O cliente pode solicitar a exclusão de sua conta a qualquer momento pelo aplicativo. 
+    8.2. A plataforma pode encerrar a conta do cliente em caso de descumprimento dos termos de uso.
+9. ALTERAÇÕES NOS TERMOS DE USO 
+    9.1. O Dou Um Help! pode modificar estes termos a qualquer momento, notificando os usuários com antecedência.
+10. DISPOSIÇÕES GERAIS 10.1. Estes termos são regidos pelas leis brasileiras. 10.2. Qualquer controvérsia será solucionada no foro da cidade sede da empresa Dou Um Help!.
+Ao utilizar o aplicativo, o cliente concorda integralmente com este Termo de Uso.
+
