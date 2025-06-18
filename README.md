@@ -408,19 +408,3 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
-## 📞 Contato e Suporte
-
-### Equipe de Desenvolvimento
-- **Desenvolvedor Principal**: [Seu Nome]
-- **Email**: [seu-email@exemplo.com]
-- **GitHub**: [@seu-usuario]
-
-### Canais de Suporte
-- **Issues**: [GitHub Issues](https://github.com/seu-usuario/DouUmHelp-FLUTTER/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/seu-usuario/DouUmHelp-FLUTTER/discussions)
-- **Documentação**: [Wiki do Projeto](https://github.com/seu-usuario/DouUmHelp-FLUTTER/wiki)
-
-### Comunidade
-- **LinkedIn**: [Página da Empresa](https://linkedin.com/company/douumhelp)
-
----
