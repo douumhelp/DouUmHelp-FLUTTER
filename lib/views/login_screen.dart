@@ -26,8 +26,8 @@ class LoginScreenState extends State<LoginScreen> {
     return Consumer<AuthViewModel>(
       builder: (context, authViewModel, child) {
         // Removida verificação automática de redirecionamento
-        
-        return Scaffold(
+
+    return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
         child: Padding(
@@ -194,28 +194,28 @@ class LoginScreenState extends State<LoginScreen> {
         borderRadius: BorderRadius.circular(30),
       ),
       child: TextFormField(
-        controller: controller,
+      controller: controller,
         obscureText: isPassword && !_passwordVisible,
         keyboardType: isPassword ? TextInputType.visiblePassword : TextInputType.emailAddress,
-        decoration: InputDecoration(
+      decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.grey),
-          hintText: hint,
+        hintText: hint,
           hintStyle: TextStyle(color: Color(0xFF6B7280)),
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    _passwordVisible ? Icons.visibility : Icons.visibility_off,
+        suffixIcon: isPassword
+            ? IconButton(
+                icon: Icon(
+                  _passwordVisible ? Icons.visibility : Icons.visibility_off,
                     color: Colors.grey,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _passwordVisible = !_passwordVisible;
-                    });
-                  },
-                )
-              : null,
+                ),
+                onPressed: () {
+                  setState(() {
+                    _passwordVisible = !_passwordVisible;
+                  });
+                },
+              )
+            : null,
         ),
       ),
     );

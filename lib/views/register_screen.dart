@@ -244,20 +244,20 @@ class RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.circular(30),
             ),
             child: TextFormField(
-              controller: controller,
+      controller: controller,
               obscureText: confirm ? !_confirmPasswordVisible : !_passwordVisible,
-              decoration: InputDecoration(
+      decoration: InputDecoration(
                 prefixIcon: Icon(Icons.lock, color: Colors.grey),
                 hintText: hint,
                 hintStyle: TextStyle(color: Color(0xFF6B7280)),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 suffixIcon: IconButton(
-                  icon: Icon(
+                icon: Icon(
                     confirm ? (_confirmPasswordVisible ? Icons.visibility : Icons.visibility_off)
-                           : (_passwordVisible ? Icons.visibility : Icons.visibility_off),
+                        : (_passwordVisible ? Icons.visibility : Icons.visibility_off),
                     color: Colors.grey,
-                  ),
+                ),
                   onPressed: () {
                     setState(() {
                       if (confirm) {
@@ -268,7 +268,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                     });
                   },
                 ),
-              ),
+        ),
               validator: (value) {
                 if (value!.isEmpty) {
                   return 'Campo obrigatório';
@@ -279,7 +279,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                 return null;
               },
             ),
-          ),
+        ),
         ],
       ),
     );
