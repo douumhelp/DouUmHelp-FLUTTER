@@ -31,14 +31,9 @@ class _SolicitacoesListScreenState extends State<SolicitacoesListScreen> {
 
     try {
       final prefs = await SharedPreferences.getInstance();
-      userId = prefs.getString('userId') ?? 'user_${DateTime.now().millisecondsSinceEpoch}';
-      
-      print('=== CARREGANDO SOLICITAÇÕES ===');
-      print('userId usado: $userId');
+      userId = prefs.getString('userId') ?? 'user_${DateTime.now().millisecondsSinceEpoch}'; 
       
       final lista = await _solicitacaoService.listarSolicitacoesPorUsuario(userId!);
-      
-      print('Solicitações encontradas: ${lista.length}');
       
       setState(() {
         solicitacoes = lista;
